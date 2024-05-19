@@ -35,7 +35,7 @@
       <!-- Mobile Menu -->
       <transition name="slide-fade">
         <div v-if="isMenuOpen" class="md:hidden">
-          <nav class="bg-white shadow-md">
+          <nav class="bg-white ">
             <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Home</a>
             <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">About</a>
             <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200">Services</a>
