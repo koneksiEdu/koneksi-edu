@@ -41,7 +41,7 @@
 <script>
 import { computed, ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
-import { RouterLink } from 'vue-router'
+
   
 export default {
   setup() {
