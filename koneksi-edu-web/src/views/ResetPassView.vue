@@ -1,22 +1,22 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-sm mx-6">
-      <h2 class="text-2xl font-bold mb-6 text-center">Signup</h2>
-      <form @submit.prevent="signup" class="space-y-4">
+      <h2 class="text-2xl font-bold mb-6 text-center">Ubah Password</h2>
+      <form @submit.prevent="changePass" class="space-y-4">
         <div>
           <input
-            v-model="email"
-            type="email"
-            placeholder="Email"
+            v-model="newPassword"
+            type="password"
+            placeholder="Password Baru"
             required
             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
           />
         </div>
         <div>
           <input
-            v-model="password"
+            v-model="confirmationPassword"
             type="password"
-            placeholder="Password"
+            placeholder="Konfirmasi Password"
             required
             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
           />
@@ -26,7 +26,7 @@
             type="submit"
             class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors duration-200"
           >
-            Sign Up
+            Ubah
           </button>
         </div>
       </form>
@@ -36,27 +36,27 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 import { computed, ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
 
 export default {
   setup() {
-    const email = ref('');
-    const password = ref('');
+    const newPassword = ref('');
+    const confirmationPassword = ref('');
     const authStore = useAuthStore();
 
     const error = computed(() => authStore.error);
 
-    const signup = () => {
-      authStore.signup(email.value, password.value);
+    const changePass = async () => {
+    authStore.cgPass(confirmationPassword.value, newPassword.value)
     };
 
     return {
-      email,
-      password,
-      signup,
+      newPassword,
+      confirmationPassword,
+      changePass,
       error,
     };
   },

@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import SignupView from '../views/SignupView.vue'
 import StrartedView from '../views/StartedView.vue'
+import ResetPassView from '../views/ResetPassView.vue'
 import { useAuthStore } from '../stores/auth';
 
 const router = createRouter({
@@ -29,6 +30,12 @@ const router = createRouter({
       path: '/start',
       name: 'start',
       component: StrartedView,
+    },
+    {
+      path: '/reset-pass',
+      name: 'resetPass',
+      component: ResetPassView,
+      meta: { requiresAuth: true }
     }
   ]
 })
@@ -44,9 +51,12 @@ router.beforeEach(async(to, from, next) => {
   if (to.meta.requiresNoAuth && authStore.user) {
     // Jika memerlukan tidak autentikasi dan pengguna sudah login, redirect ke halaman home
     next("/");
+  } else if (to.meta.requiresAuth && !authStore.user){
+    // Jika memerlukan  autentikasi dan tidak login, redirect ke halaman home
+    next('/');
   } else {
     // Jika tidak memerlukan autentikasi atau pengguna sudah login, lanjutkan ke halaman yang diminta
-    next();
+    next()
   }
 });
 

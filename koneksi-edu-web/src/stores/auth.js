@@ -4,16 +4,6 @@ import { supabase } from '../lib/supabaseClient';
 import Swal from 'sweetalert2'
 import router from '@/router';
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
-
-  return { count, doubleCount, increment }
-})
-
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
@@ -37,7 +27,7 @@ export const useAuthStore = defineStore('auth', {
         email: mail,
         password: pass,
         options: {
-          emailRedirectTo: import.meta.env.VITE_WEB_URL,
+          emailRedirectTo: `${import.meta.env.VITE_WEB_URL}/start`,
         },
       });
       if (error) {
@@ -53,11 +43,36 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async resetPassword(email) {
-      const { error } = await supabase.auth.api.resetPasswordForEmail(email);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${import.meta.env.VITE_WEB_URL}/reset-pass`
+      });
       if (error) {
         this.error = error.message;
       } else {
-        alert(`Email atur ulang password telah dikirim ke ${email}.`);
+        Swal.fire({
+          title: "Ubah Password",
+          text: `Email atur ulang password telah dikirim ke ${email}.`,
+          icon: "success"
+        });
+      }
+    },
+    async cgPass(pass, npass) {
+      if (pass === npass){
+        const { error } = await supabase.auth.updateUser({
+          password: npass
+        })
+        if (error) {
+          this.error = error.message;
+        } else {
+          Swal.fire({
+            title: "Ubah Password",
+            text: "Ubah password berhasil! Kamu akan diarahkan ke halaman login",
+            icon: "success"
+          });
+          router.push("/login")
+        }
+      } else {
+        this.error = "Pastikan password baru dan konfirmasi sama!"
       }
     },
     async login(mail, pass) {
@@ -73,7 +88,7 @@ export const useAuthStore = defineStore('auth', {
         this.user = user;
         Swal.fire({
           title: "Login",
-          text: "Login berhasil, kamu akan diarahkan ke dashboard",
+          text: "Login berhasil! Kamu akan diarahkan ke dashboard",
           icon: "success"
         });
         router.push("/")
