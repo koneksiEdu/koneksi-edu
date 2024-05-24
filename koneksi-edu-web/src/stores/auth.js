@@ -1,6 +1,8 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '../lib/supabaseClient';
+import Swal from 'sweetalert2'
+import router from '@/router';
 
 export const useCounterStore = defineStore('counter', () => {
   const count = ref(0)
@@ -35,7 +37,7 @@ export const useAuthStore = defineStore('auth', {
         email: mail,
         password: pass,
         options: {
-          emailRedirectTo: 'http://localhost:5173/start',
+          emailRedirectTo: import.meta.env.VITE_WEB_URL,
         },
       });
       if (error) {
@@ -43,7 +45,11 @@ export const useAuthStore = defineStore('auth', {
       } else {
         this.error = null;
         this.user = user;
-        alert('Pendaftaran berhasil, silahkan cek email kamu untuk konfirmasi! Mohon jangan tutup halaman ini saat konfirmasi email.');
+        Swal.fire({
+          title: "Daftar",
+          text: "Pendaftaran berhasil, silahkan cek email kamu untuk konfirmasi!",
+          icon: "success"
+        });
       }
     },
     async resetPassword(email) {
@@ -65,7 +71,12 @@ export const useAuthStore = defineStore('auth', {
       } else {
         this.error = null;
         this.user = user;
-        alert('Login berhasil!');
+        Swal.fire({
+          title: "Login",
+          text: "Login berhasil, kamu akan diarahkan ke dashboard",
+          icon: "success"
+        });
+        router.push("/")
       }
     },
     async logout() {

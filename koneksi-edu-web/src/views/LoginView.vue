@@ -32,7 +32,10 @@
       </form>
       <p v-if="error" class="mt-4 text-red-500">{{ error }}</p>
       <div class="mt-4 text-center">
-        <RouterLink to="/signup" class="text-blue-500 hover:underline">Belum Punya Akun?</RouterLink>
+        <button @click="toSingnUp" class="text-blue-500 hover:underline">Belum punya akun?</button>
+      </div>
+      <div class="mt-4 text-center">
+        <button @click="toForgot" class="text-blue-500 hover:underline">Lupa password?</button>
       </div>
     </div>
   </div>
@@ -41,7 +44,8 @@
 <script>
 import { computed, ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
-
+import router from '@/router';
+import Swal from 'sweetalert2'
   
 export default {
   setup() {
@@ -55,11 +59,44 @@ export default {
         authStore.login(email.value, password.value);
       };
 
+      const isValidEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+      };
+      
+      const toForgot = async () => {
+        const { value: email } = await Swal.fire({
+          title: 'Reset Password',
+          input: 'email',
+          inputLabel: 'Masukan email kamu',
+          inputPlaceholder: 'contoh@mail.com',
+          showCancelButton: true,
+          inputValidator: (value) => {
+            if (!value) {
+              return 'Email tidak boleh kosong!';
+            }
+            if (!isValidEmail(value)) {
+              return 'Masukan email yang valid!';
+            }
+          }
+        });
+        if (email) {
+          await authStore.resetPassword(email);
+        }
+      };
+
+      const toSingnUp = () => {
+        authStore.error = ""
+        router.push("/signup")        
+      }
+
       return {
         email,
         password,
         login,
         error,
+        toSingnUp,
+        toForgot
       };
   },
 };
