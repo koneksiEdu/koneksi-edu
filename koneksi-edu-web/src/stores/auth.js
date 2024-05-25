@@ -21,24 +21,28 @@ export const useAuthStore = defineStore('auth', {
         console.log(error.message)
       }
     },
-    async signup(mail, pass) {
-      const { user, error } = await supabase.auth.signUp({
-        email: mail,
-        password: pass,
-        options: {
-          emailRedirectTo: `${import.meta.env.VITE_WEB_URL}/start`,
-        },
-      });
-      if (error) {
-        this.error = error.message;
-      } else {
-        this.error = null;
-        this.user = user;
-        Swal.fire({
-          title: "Daftar",
-          text: "Pendaftaran berhasil, silahkan cek email kamu untuk konfirmasi!",
-          icon: "success"
+    async signup(mail, pass, npass) {
+      if (pass = npass){
+        const { user, error } = await supabase.auth.signUp({
+          email: mail,
+          password: pass,
+          options: {
+            emailRedirectTo: `${import.meta.env.VITE_WEB_URL}/start`,
+          },
         });
+        if (error) {
+          this.error = error.message;
+        } else {
+          this.error = null;
+          this.user = user;
+          Swal.fire({
+            title: "Daftar",
+            text: "Pendaftaran berhasil, silahkan cek email kamu untuk konfirmasi!",
+            icon: "success"
+          });
+        }
+      } else{
+        this.error = "Pastikan password dan konfirmasi sama!"
       }
     },
     async resetPassword(email) {
