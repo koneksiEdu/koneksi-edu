@@ -57,18 +57,24 @@
 </template>
   
 <script>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
 export default {
   setup() {
     const isMenuOpen = ref(false);
-    const isLogin = ref(false)
+    const isLogin = ref(false);
+    const cek = ref(false);
     const authStore = useAuthStore();
-
+    const router = useRouter();
 
     watch(() => authStore.currentUser, (newVal) => {
-      isLogin.value = newVal;
+      isLogin.value = !!newVal;
+    }, { immediate: true });
+
+    onMounted(async () => {
+      await authStore.fetchUser();
     });
 
     const toggleMenu = () => {
@@ -76,14 +82,16 @@ export default {
     };
 
     const logout = async () => {
-      authStore.logout();
+      await authStore.logout();
+      router.push("/login");
     };
 
     return {
       isMenuOpen,
       toggleMenu,
       logout,
-      isLogin
+      isLogin,
+      cek
     };
   },
 };

@@ -1,4 +1,3 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { supabase } from '../lib/supabaseClient';
 import Swal from 'sweetalert2'
@@ -66,10 +65,10 @@ export const useAuthStore = defineStore('auth', {
         } else {
           Swal.fire({
             title: "Ubah Password",
-            text: "Ubah password berhasil! Kamu akan diarahkan ke halaman login",
+            text: "Ubah password berhasil! Kamu akan diarahkan ke halaman dashboard",
             icon: "success"
           });
-          router.push("/login")
+          router.push("/")
         }
       } else {
         this.error = "Pastikan password baru dan konfirmasi sama!"
