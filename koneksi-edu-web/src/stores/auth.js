@@ -22,7 +22,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async signup(mail, pass, npass) {
-      if (pass = npass){
+      if (pass === npass){
         const { user, error } = await supabase.auth.signUp({
           email: mail,
           password: pass,
