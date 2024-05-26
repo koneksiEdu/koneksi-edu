@@ -10,13 +10,19 @@
             required
             class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
           />
-          <input
-            v-model="password"
-            type="password"
-            placeholder="Password"
-            required
-            class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
-          />
+          <div class="relative w-full">
+            <input
+              v-model="password"
+              :type="showPassword ? 'text' : 'password'"
+              placeholder="Password"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-500"
+            >
+            <PasswordToggle
+              :showPassword="showPassword"
+              @toggle="togglePasswordVisibility"
+            />
+          </div>
           <button
             type="submit"
             class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors duration-200"
@@ -40,12 +46,21 @@ import { computed, ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import router from '@/router';
 import Swal from 'sweetalert2'
+import PasswordToggle from '@/components/PasswordToggle.vue';
   
 export default {
+  components: {
+    PasswordToggle,
+  },
   setup() {
       const email = ref('');
       const password = ref('');
       const authStore = useAuthStore();
+      const showPassword = ref(false);
+
+      const togglePasswordVisibility = () => {
+        showPassword.value = !showPassword.value;
+      };
 
       const error = computed(() => authStore.error);
 
@@ -90,7 +105,9 @@ export default {
         login,
         error,
         toSingnUp,
-        toForgot
+        toForgot,
+        showPassword,
+        togglePasswordVisibility,
       };
   },
 };
