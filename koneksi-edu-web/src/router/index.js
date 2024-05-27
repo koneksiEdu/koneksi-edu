@@ -5,6 +5,7 @@ import SignupView from '../views/SignupView.vue'
 import StrartedView from '../views/StartedView.vue'
 import ResetPassView from '../views/ResetPassView.vue'
 import { useAuthStore } from '../stores/auth';
+import {supabase} from '@/lib/supabaseClient'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,8 +55,23 @@ router.beforeEach(async(to, from, next) => {
   } else if (to.meta.requiresAuth && !authStore.user){
     // Jika memerlukan  autentikasi dan tidak login, redirect ke halaman home
     next('/');
-  } else {
-    // Jika tidak memerlukan autentikasi atau pengguna sudah login, lanjutkan ke halaman yang diminta
+  } else if (to.name === "start"){
+    // Check jika user profile sudah dibuat
+    if(authStore.user){
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', authStore.user.id)
+        .single()
+      if (data !== null && authStore.user) {
+        next("/")
+      } else {
+        next()
+      } 
+    }else{
+      next("/login")
+    }
+ } else {
     next()
   }
 });
