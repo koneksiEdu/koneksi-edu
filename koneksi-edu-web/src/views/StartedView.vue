@@ -35,7 +35,6 @@ import router from '@/router';
 
 export default {
   setup() {
-    const userId = ref('user-unique-id')
     const username = ref('')
     const errorMessage = ref('')
     const user = ref([])
@@ -49,7 +48,7 @@ export default {
         .eq('username', username.value)
       
       if (error) {
-        console.error('Error checking username:', error)
+        console.error('Error check username:', error)
       } else {
         isUsernameTaken.value = data.length > 0
       }
@@ -57,15 +56,11 @@ export default {
 
     const createProfile = async () => {
       user.value = authStore.currentUser
-      if (!user.value) {
-        errorMessage.value = "You need to be logged in to create a profile."
-        return
-      }
 
       // Validasi username sebelum mengirim ke backend
       const usernameRegex = /^[a-zA-Z0-9]+$/
       if (!usernameRegex.test(username.value)) {
-        errorMessage.value = "Username can only contain letters and numbers without spaces."
+        errorMessage.value = "Username hanya boleh terdiri dari huruf dan angka tanpa spasi."
         return
       }
 
