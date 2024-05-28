@@ -72,7 +72,7 @@ export const useAuthStore = defineStore('auth', {
             text: "Ubah password berhasil! Kamu akan diarahkan ke halaman dashboard",
             icon: "success"
           });
-          router.push("/")
+          router.push("/dashboard")
         }
       } else {
         this.error = "Pastikan password baru dan konfirmasi sama!"
@@ -94,7 +94,7 @@ export const useAuthStore = defineStore('auth', {
           text: "Login berhasil! Kamu akan diarahkan ke dashboard",
           icon: "success"
         });
-        router.push("/")
+        router.push("/dashboard")
       }
     },
     async logout() {

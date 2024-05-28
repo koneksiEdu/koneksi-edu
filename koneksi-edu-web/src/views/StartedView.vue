@@ -1,24 +1,28 @@
 <template>
-  <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
-    <h2 class="text-2xl font-bold mb-6">Create Profile</h2>
-    <form @submit.prevent="createProfile">
-      <div class="mb-4">
-        <label class="block text-gray-700">Username</label>
-        <input 
-          v-model="username" 
-          type="text" 
-          class="w-full mt-2 p-2 border border-gray-300 rounded"
-          required
-        />
-      </div>
-      <button 
-        type="submit" 
-        class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
-      >
-        Create Profile
-      </button>
-      <p v-if="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</p>
-    </form>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md mx-6">
+      <h2 class="text-2xl font-bold mb-6">Buat Halamanmu</h2>
+      <form @submit.prevent="createProfile">
+        <div class="mb-4">
+          <label class="block text-gray-700">Pilih username untuk pixelink kamu:</label>
+          <p class="break-words text-sm font-semibold text-blue-300 p-2 bg-gray-100">{{ webUrl }}/{{ username }}</p>
+          <input 
+            v-model="username" 
+            type="text" 
+            class="w-full mt-2 p-2 border border-gray-300 rounded"
+            required
+            @blur="checkUsername"
+          />
+        </div>
+        <button 
+          type="submit" 
+          class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
+        >
+          Buat Halaman
+        </button>
+        <p v-if="errorMessage" class="text-red-500 mt-4">{{ errorMessage }}</p>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -26,14 +30,30 @@
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabaseClient.js'
 import { useAuthStore } from '@/stores/auth';
-
+import Swal from 'sweetalert2'
+import router from '@/router';
 
 export default {
   setup() {
+    const userId = ref('user-unique-id')
     const username = ref('')
     const errorMessage = ref('')
     const user = ref([])
     const authStore = useAuthStore();
+    const isUsernameTaken = ref(false)
+
+    const checkUsername = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username.value)
+      
+      if (error) {
+        console.error('Error checking username:', error)
+      } else {
+        isUsernameTaken.value = data.length > 0
+      }
+    }
 
     const createProfile = async () => {
       user.value = authStore.currentUser
@@ -49,6 +69,7 @@ export default {
         return
       }
 
+
       const { data, error } = await supabase
         .from('profiles')
         .insert([
@@ -60,8 +81,18 @@ export default {
 
       if (error) {
         errorMessage.value = error.message
+        
+        if (isUsernameTaken.value) {
+          errorMessage.value = 'Username sudah ada silahkan bikin yang lain!'
+          return
+        }
       } else {
-        // Handle successful profile creation (e.g., redirect or show success message)
+        Swal.fire({
+          title: "Login",
+          text: "Halamanmu berhasil dibuat!",
+          icon: "success"
+        });
+        router.push("/dashboard")
       }
     }
 
@@ -69,7 +100,10 @@ export default {
       username,
       errorMessage,
       user,
-      createProfile
+      createProfile,
+      isUsernameTaken,
+      checkUsername,
+      webUrl: import.meta.env.VITE_WEB_URL
     }
   }
 }
