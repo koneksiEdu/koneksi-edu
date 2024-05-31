@@ -56,8 +56,8 @@ router.beforeEach(async(to, from, next) => {
 
   // Memeriksa apakah halaman yang akan diakses memerlukan autentikasi
   if (to.meta.requiresNoAuth && authStore.user) {
-    // Jika memerlukan tidak autentikasi dan pengguna sudah login, redirect ke halaman home
-    next("/");
+    // Jika memerlukan tidak autentikasi dan pengguna sudah login, redirect ke halaman dashboard
+    next("/dashboard");
   } else if (to.meta.requiresAuth && !authStore.user){
     // Jika memerlukan  autentikasi dan tidak login, redirect ke halaman home
     next('/');
