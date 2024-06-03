@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+  @font-face {
+    font-family: 'cornelia-sans';
+    src: url('../assets/fonts/cornelia-sans.ttf');
+  }
