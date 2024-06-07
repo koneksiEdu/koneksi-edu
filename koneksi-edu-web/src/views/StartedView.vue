@@ -67,12 +67,12 @@ export default {
 
       const { data, error } = await supabase
         .from('profiles')
-        .insert([
+        .update([
           {
-            id: user.value.id,
             username: username.value,
           }
         ])
+        .eq('id', user.value.id)
 
       if (error) {
         errorMessage.value = error.message

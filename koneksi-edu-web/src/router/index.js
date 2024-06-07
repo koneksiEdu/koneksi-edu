@@ -66,10 +66,10 @@ router.beforeEach(async(to, from, next) => {
     if(authStore.user){
       const { data, error } = await supabase
         .from('profiles')
-        .select('id')
+        .select('*')
         .eq('id', authStore.user.id)
         .single()
-      if (data !== null && authStore.user) {
+      if (data.username !== null && authStore.user) {
         next("/dashboard")
       } else {
         next()
@@ -81,10 +81,10 @@ router.beforeEach(async(to, from, next) => {
     if(authStore.user){
       const { data, error } = await supabase
         .from('profiles')
-        .select('id')
+        .select('*')
         .eq('id', authStore.user.id)
         .single()
-      if (data !== null && authStore.user) {
+      if (data.username !== null && authStore.user) {
         next()
       } else {
         next("/start")
