@@ -36,29 +36,27 @@
             <button @click="openModal('button')" class="border-2 rounded-full border-gray-200 bg-blue-800 text-white px-4 py-2">Tambah Link <i class="bi bi-plus text-white"></i></button>
             <button @click="openModal('header')" class="border-2 rounded-full border-gray-200 bg-blue-800 text-white px-4 py-2">Tambah Header <i class="bi bi-plus text-white"></i></button>
           </div>
-          <draggable class="mt-4" v-if="links.length > 0" v-model="links" @end="updatePositions" :itemKey="'id'">
+          <draggable class="mt-4" v-if="links.length > 0" v-model="links" @end="updatePositions" :itemKey="'id'" handle=".handle">
             <template #item="{ element, index }">
-              <div class="card bg-white shadow-md p-4 mb-4 rounded">
-                <div v-if="element.type === 'button'">
-                  <h3 class="text-blue-800">{{ element.title }}</h3>
-                  <p class="bg-gray-100 rounded-md text-center text-blue-500 mt-2">{{ element.url }}</p>
+              <div class="card flex bg-white shadow-md p-4 mb-4 rounded">
+                <div class="handle cursor-move mr-2 flex-shrink-0">
+                  <i class="bi bi-grip-vertical text-blue-800"></i>
                 </div>
-                <div v-else-if="element.type === 'header'">
-                  <h3 class="text-blue-800">{{ element.title }}</h3>
-                </div>
-                <div class="flex justify-between items-center mt-2">
-                  <div class="space-x-1">
-                    <button @click="openModal(element.type, element, index)" class="bg-blue-500 text-white px-2 py-1 rounded"><i class="bi bi-pencil-square"></i></button>
-                    <button @click="deleteLink(index)" class="bg-blue-800 text-blue-100 px-2 py-1 rounded"><i class="bi bi-trash"></i></button>
+                <div class="flex-grow">
+                  <div v-if="element.type === 'button'">
+                    <h3 class="text-blue-800">{{ element.title }}</h3>
+                    <p class="bg-gray-100 rounded-md text-sm px-1 text-blue-500 mt-2 break-all">{{ element.url }}</p>
                   </div>
-                  <div>
-                    <input :id="'toggle-' + element.id" type="checkbox" class="hidden" v-model="element.isActive">
-                    <label :for="'toggle-' + element.id" class="flex items-center cursor-pointer">
-                      <div class="relative">
-                        <div :class="['block w-14 h-8 rounded-full', element.isActive ? 'bg-indigo-600' : 'bg-gray-300']"></div>
-                        <div :class="['dot absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition transform', element.isActive ? 'translate-x-6' : '']"></div>
-                      </div>
-                    </label>
+                  <div v-else-if="element.type === 'header'">
+                    <h3 class="text-blue-800">{{ element.title }}</h3>
+                  </div>
+                  <div class="flex justify-between items-center mt-2">
+                    <div class="space-x-1">
+                      <button @click="openModal(element.type, element, index)" class="bg-blue-500 text-white px-2 py-1 rounded"><i class="bi bi-pencil-square"></i></button>
+                      <button @click="showDeleteModal(index)" class="bg-blue-800 text-blue-100 px-2 py-1 rounded"><i class="bi bi-trash"></i></button>
+                    </div>
+                    <div v-if="element.isActive" class="bg-blue-500 text-white px-2 py-1 rounded-full"><i class="bi bi-lightbulb-fill"></i></div>
+                    <div v-else class="bg-blue-300 text-white px-2 py-1 rounded-full"><i class="bi bi-lightbulb-off-fill"></i></div>
                   </div>
                 </div>
               </div>
@@ -79,6 +77,13 @@
                 <label for="modalUrl" class="block mb-2 text-blue-800">URL</label>
                 <input placeholder="https://contoh.com" type="text" id="modalUrl" v-model="modalUrl" class="w-full text-blue-800 px-4 py-2 rounded-md bg-gray-100 focus:outline-none">
               </div>
+              <input id="modalCheckisActive" type="checkbox" class="hidden" v-model="modalCheckisActive">
+              <label for="modalCheckisActive" class="flex items-center cursor-pointer">
+                <div class="relative">
+                  <div :class="['block w-14 h-8 rounded-full', modalCheckisActive ? 'bg-indigo-600' : 'bg-gray-300']"></div>
+                  <div :class="['dot absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition transform', modalCheckisActive ? 'translate-x-6' : '']"></div>
+                </div>
+              </label>
               <div v-if="modalError" class="text-blue-500 mb-4">{{ modalError }}</div>
               <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none mt-2">Simpan</button>
               <button @click="closeModal" type="button" class="w-full mt-2 bg-blue-800 text-blue-100 py-2 px-4 rounded-md focus:outline-none">Batal</button>
@@ -122,6 +127,7 @@ export default {
     const modalUrl = ref('');
     const editingIndex = ref(null);
     const modalError = ref('');
+    const modalCheckisActive = ref(false)
 
     watch(() => authStore.currentUser, async (newVal) => {
       if (newVal) {
@@ -165,10 +171,12 @@ export default {
       if (element) {
         modalTitle.value = element.title;
         modalUrl.value = element.url || '';
+        modalCheckisActive.value = element.isActive || false;
         editingIndex.value = index;
       } else {
         modalTitle.value = '';
         modalUrl.value = '';
+        modalCheckisActive.value = false;
         editingIndex.value = null;
       }
       modalError.value = ''; // Reset modal error
@@ -179,21 +187,22 @@ export default {
       isModalOpen.value = false;
       modalTitle.value = '';
       modalUrl.value = '';
+      modalCheckisActive.value = false; // Use .value to update ref
       editingIndex.value = null;
       modalError.value = '';
     };
 
     const validateModal = () => {
       if (!modalTitle.value.trim()) {
-        modalError.value = 'Title cannot be empty.';
+        modalError.value = 'Judul tidak boleh kosong.';
         return false;
       }
       if (modalType.value === 'button' && !modalUrl.value.trim()) {
-        modalError.value = 'URL cannot be empty.';
+        modalError.value = 'URL tidak boleh kosong.';
         return false;
       }
       if (modalType.value === 'button' && !isValidUrl(modalUrl.value)) {
-        modalError.value = 'URL format is invalid.';
+        modalError.value = 'URL format tidak valid.';
         return false;
       }
       modalError.value = '';
@@ -213,6 +222,7 @@ export default {
         id: editingIndex.value !== null ? links.value[editingIndex.value].id : Date.now(),
         title: modalTitle.value,
         type: modalType.value,
+        isActive: modalCheckisActive.value,
         ...(modalType.value === 'button' && { url: modalUrl.value }),
       };
       if (editingIndex.value !== null) {
@@ -222,6 +232,23 @@ export default {
       }
       saveLinks();
       closeModal();
+    };
+
+    const showDeleteModal = (index) => {
+      Swal.fire({
+        title: 'Konfirmasi Hapus',
+        text: 'Apakah Anda yakin ingin menghapus item ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Hapus',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteLink(index)
+        }
+      });
     };
 
     const deleteLink = (index) => {
@@ -345,10 +372,12 @@ export default {
       modalType,
       modalTitle,
       modalUrl,
+      modalCheckisActive,
       handleModalSubmit,
       closeModal,
       openModal,
-      modalError
+      modalError,
+      showDeleteModal
     };
   }
 };
@@ -360,8 +389,12 @@ export default {
   max-width: 600px;
   margin: auto;
 }
-.card {
-  cursor: grab;
+.handle {
+  display: flex;
+  align-items: center;
+  cursor: move;
+}
+.bi-grip-vertical {
+  font-size: 24px;
 }
 </style>
-saat toggle dihidupkan hanya mengubah nilai isActive.value di local saja,tidak mengubah di supabase
