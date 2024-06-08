@@ -46,9 +46,20 @@
                 <div v-else-if="element.type === 'header'">
                   <h3 class="text-blue-800">{{ element.title }}</h3>
                 </div>
-                <div class="space-x-1 mt-2">
-                  <button @click="openModal(element.type, element, index)" class="bg-blue-500 text-white px-2 py-1 rounded"><i class="bi bi-pencil-square"></i></button>
-                  <button @click="deleteLink(index)" class="bg-blue-800 text-blue-100 px-2 py-1 rounded"><i class="bi bi-trash"></i></button>
+                <div class="flex justify-between items-center mt-2">
+                  <div class="space-x-1">
+                    <button @click="openModal(element.type, element, index)" class="bg-blue-500 text-white px-2 py-1 rounded"><i class="bi bi-pencil-square"></i></button>
+                    <button @click="deleteLink(index)" class="bg-blue-800 text-blue-100 px-2 py-1 rounded"><i class="bi bi-trash"></i></button>
+                  </div>
+                  <div>
+                    <input :id="'toggle-' + element.id" type="checkbox" class="hidden" v-model="element.isActive">
+                    <label :for="'toggle-' + element.id" class="flex items-center cursor-pointer">
+                      <div class="relative">
+                        <div :class="['block w-14 h-8 rounded-full', element.isActive ? 'bg-indigo-600' : 'bg-gray-300']"></div>
+                        <div :class="['dot absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition transform', element.isActive ? 'translate-x-6' : '']"></div>
+                      </div>
+                    </label>
+                  </div>
                 </div>
               </div>
             </template>
@@ -69,7 +80,7 @@
                 <input placeholder="https://contoh.com" type="text" id="modalUrl" v-model="modalUrl" class="w-full text-blue-800 px-4 py-2 rounded-md bg-gray-100 focus:outline-none">
               </div>
               <div v-if="modalError" class="text-blue-500 mb-4">{{ modalError }}</div>
-              <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none">Simpan</button>
+              <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none mt-2">Simpan</button>
               <button @click="closeModal" type="button" class="w-full mt-2 bg-blue-800 text-blue-100 py-2 px-4 rounded-md focus:outline-none">Batal</button>
             </form>
           </div>
@@ -78,6 +89,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { ref, watch, onMounted } from 'vue';
@@ -225,7 +237,7 @@ export default {
       try {
         const { error } = await supabase
           .from('links')
-          .upsert({ user_id: uid.value, link_values: links.value }, { onConflict: ['user_id'] }); // Use upsert with onConflict
+          .upsert({ user_id: uid.value, link_values: links.value }, { onConflict: ['user_id'] });
         if (error) {
           console.error("Error saving links:", error);
         }
@@ -342,6 +354,7 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .container {
   max-width: 600px;
@@ -351,3 +364,4 @@ export default {
   cursor: grab;
 }
 </style>
+saat toggle dihidupkan hanya mengubah nilai isActive.value di local saja,tidak mengubah di supabase
