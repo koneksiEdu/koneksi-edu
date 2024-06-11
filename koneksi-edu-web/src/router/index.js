@@ -5,6 +5,7 @@ import SignupView from '../views/SignupView.vue'
 import StrartedView from '../views/StartedView.vue'
 import ResetPassView from '../views/ResetPassView.vue'
 import DashboardView from '../views/DashboardView.vue'
+import UserPageView from '@/views/UserPageView.vue'
 import { useAuthStore } from '../stores/auth';
 import {supabase} from '@/lib/supabaseClient'
 
@@ -43,6 +44,11 @@ const router = createRouter({
       path: '/dashboard',
       name: 'dashboard',
       component: DashboardView,
+    },
+    {
+      path: '/:id', // Rute dengan parameter dinamis :id
+      name: 'userpage',
+      component: UserPageView
     }
   ]
 })

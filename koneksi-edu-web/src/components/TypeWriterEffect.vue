@@ -3,14 +3,14 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import Typewriter from 'typewriter-effect/dist/core';
 
 export default {
   name: 'TypewriterComponent',
   props: {
     text: {
-      type: Array,
+      type: String,
       required: true
     },
     loop: {
@@ -25,23 +25,22 @@ export default {
   setup(props) {
     const typewriter = ref(null);
 
-    onMounted(() => {
+    // Membuat watcher untuk memantau perubahan pada properti 'text'
+    watch(() => props.text, (newText, oldText) => {
+      // Hapus teks sebelumnya
+      if (typewriter.value) {
+        typewriter.value.innerHTML = '';
+      }
+
+      // Buat instance Typewriter baru
       const typewriterInstance = new Typewriter(typewriter.value, {
         loop: props.loop,
         delay: props.delay,
-        deleteSpeed: props.deleteSpeed,
         html: true
       });
 
-      props.text.forEach((str, index) => {
-        typewriterInstance.typeString(str)
-          .pauseFor(props.pauseFor);
-        if (index < props.text.length - 1) {
-          typewriterInstance.deleteAll();
-        }
-      });
-
-      typewriterInstance.start();
+      // Ketik teks baru
+      typewriterInstance.typeString(newText).start();
     });
 
     return {

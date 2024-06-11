@@ -4,10 +4,10 @@
     <div class="flex flex-col flex-grow p-4 md:mx-3">
       <main class="w-full">
         <!-- Konten Utama Dashboard -->
-        <h1 class="text-2xl py-1 ml-2 border-2 border-gray-200 absolute px-2 text-white bg-blue-400 rounded-md inline-block">Data Diri</h1>
-        <div class="border-2 border-gray-200 mt-8 rounded-lg p-4 bg-blue-400 w-full shadow-brutal-blue md:max-w-3xl">
+        <h1 class="text-2xl py-1 ml-2 px-2 text-blue-800">Data Diri</h1>
+        <div class="border-2 border-gray-200 mt-1 rounded-lg p-4 bg-blue-400 w-full shadow-brutal-blue md:max-w-3xl">
           <p class="text-white">
-            <TypewriterComponent :text="[`Selamat datang petualang! Kami menyiapkan halaman khusus untuk menyimpan data diri Anda yang bisa diatur menggunakan halaman ini. Anda juga bisa menambahkan tautan di halaman ini, bisa digunakan untuk landing page atau portofolio instan. Untuk melihat laman diri Anda, silahkan pergi ke: <a target='blank' href='/' class='text-sm bg-white text-blue-500 px-2 rounded-md'>www.coba.com</a>`]" />
+            Halaman Anda bisa dilihat di: <RouterLink target='_blank' :to='username' class='text-sm bg-white text-blue-500 px-2 rounded-md'>{{ webUrl }}/{{ username }}</RouterLink>
           </p>
         </div>
         <div class="flex justify-center items-center mt-6">
@@ -100,7 +100,6 @@
 import { ref, watch, onMounted } from 'vue';
 import { supabase } from '@/lib/supabaseClient.js';
 import NavPartial from '@/components/NavPartial.vue';
-import TypewriterComponent from '@/components/TypeWriterEffect.vue';
 import { useAuthStore } from '@/stores/auth';
 import Swal from 'sweetalert2';
 import draggable from 'vuedraggable';
@@ -108,7 +107,6 @@ import draggable from 'vuedraggable';
 export default {
   components: {
     NavPartial,
-    TypewriterComponent,
     draggable
   },
   setup() {
@@ -116,6 +114,7 @@ export default {
     const fileName = ref('');
     const file = ref(null);
     const bio = ref('');
+    const username = ref('')
     const errorMessage = ref('');
     const uid = ref('');
     const avatarUrl = ref('');
@@ -143,6 +142,7 @@ export default {
           }
           avatarUrl.value = profile.avatar_url;
           bio.value = profile.bio || '';
+          username.value = profile.username
           fetchLinks(); // Fetch links after user ID is set
         } catch (error) {
           console.error("Error fetching profile:", error);
@@ -237,13 +237,17 @@ export default {
     const showDeleteModal = (index) => {
       Swal.fire({
         title: 'Konfirmasi Hapus',
-        text: 'Apakah Anda yakin ingin menghapus item ini?',
+        html: '<span class="text-blue-600">Apakah Anda yakin ingin menghapus item ini?</span>',
         icon: 'warning',
+        iconColor: "#3b82f6",
         showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#1e40af',
         confirmButtonText: 'Hapus',
-        cancelButtonText: 'Batal'
+        cancelButtonText: 'Batal',
+        customClass: {
+            title: 'text-blue-700',
+        }
       }).then((result) => {
         if (result.isConfirmed) {
           deleteLink(index)
@@ -377,7 +381,9 @@ export default {
       closeModal,
       openModal,
       modalError,
-      showDeleteModal
+      showDeleteModal,
+      webUrl: import.meta.env.VITE_WEB_URL,
+      username
     };
   }
 };
