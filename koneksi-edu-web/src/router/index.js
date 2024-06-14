@@ -6,6 +6,8 @@ import StrartedView from '../views/StartedView.vue'
 import ResetPassView from '../views/ResetPassView.vue'
 import DashboardView from '../views/DashboardView.vue'
 import UserPageView from '@/views/UserPageView.vue'
+import PieceView from '@/views/PieceView.vue'
+import ServiceView from '@/views/ServiceView.vue'
 import { useAuthStore } from '../stores/auth';
 import {supabase} from '@/lib/supabaseClient'
 
@@ -46,9 +48,19 @@ const router = createRouter({
       component: DashboardView,
     },
     {
-      path: '/:id', // Rute dengan parameter dinamis :id
+      path: '/admin/piece',
+      name: 'piece',
+      component: PieceView,
+    },
+    {
+      path: '/:id',
       name: 'userpage',
       component: UserPageView
+    },
+    {
+      path: '/dashboard/service',
+      name: 'service',
+      component: ServiceView
     }
   ]
 })
@@ -98,7 +110,22 @@ router.beforeEach(async(to, from, next) => {
     } else {
       next("/login")
     }
- } else {
+ }else if(to.name === "piece") {
+    if(authStore.user){
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authStore.user.id)
+        .single()
+      if (data.id === 'd5a45578-68ce-42d2-bb2e-59a040d3cbd6' && authStore.user) {
+        next()
+      } else {
+        next("/dashboard")
+      }
+    } else {
+      next("/login")
+    }
+  } else {
     next()
   }
 });

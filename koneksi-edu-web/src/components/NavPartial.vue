@@ -2,7 +2,7 @@
   <div class="flex flex-col md:flex-row md:w-64">
     <nav class="flex opacity-75 flex-col w-full md:w-64 md:fixed md:h-full bg-gradient-to-t from-blue-800 to-blue-500 text-white">
       <div class="flex justify-between p-4 md:hidden">
-        <span class="text-lg">Menu</span>
+        <span class="text-lg font-bold">Menu</span>
         <button @click="toggleMenu" class="focus:outline-none">
           <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
@@ -10,8 +10,8 @@
         </button>
       </div>
       <div :class="['md:flex flex-col md:relative', { 'hidden': !isMenuOpen, 'animate__animated animate__fadeIn': isMenuOpen }]">
-        <div class="flex flex-col">
-          <RouterLink v-for="item in items" :key="item.name" class="p-4 hover:bg-blue-700" :to="item.link">
+        <div class="flex flex-col mt-2">
+          <RouterLink v-for="item in items" :key="item.name" class="font-bold p-4 hover:bg-blue-700 hover:rounded-md hover:mx-2" :to="item.link">
             {{ item.name }}
           </RouterLink>
         </div>
@@ -30,10 +30,10 @@ export default {
     const authStore = useAuthStore();
     const imgUrl = ref("");
     const items = [
-      { name: "DATA DIRI", link: "#" },
-      { name: "PARTAI", link: "#" },
-      { name: "PENYIMPANAN", link: "#" },
-      { name: "PEKERJAAN", link: "#" },
+      { name: "DATA DIRI & TAUTAN", link: "/dashboard" },
+      { name: "WIDGET", link: "#" },
+      { name: "TAMPILAN", link: "#" },
+      { name: "JASA & PRODUK KAMI", link: "/dashboard/service" },
       { name: "PERAN", link: "#" },
       { name: "KELUAR", link: "/" }
     ];

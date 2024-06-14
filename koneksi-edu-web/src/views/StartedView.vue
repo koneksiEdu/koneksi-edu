@@ -70,6 +70,7 @@ export default {
         .update([
           {
             username: username.value,
+            email: user.value.email
           }
         ])
         .eq('id', user.value.id)

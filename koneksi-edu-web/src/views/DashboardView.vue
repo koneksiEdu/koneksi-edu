@@ -1,18 +1,20 @@
+<!-- halaman ini tidak bisa diakses jika tidak menggunakan akun yg tepat -->
+
 <template>
-  <div class="flex flex-col md:flex-row min-h-screen bg-gradient-to-r from-white to-sky-100 font-cornelia-sans">
+  <div class="flex flex-col md:flex-row min-h-screen bg-gradient-to-r from-white to-sky-100">
     <NavPartial />
     <div class="flex flex-col flex-grow p-4 md:mx-3">
       <main class="w-full">
         <!-- Konten Utama Dashboard -->
-        <h1 class="text-2xl py-1 ml-2 px-2 text-blue-800">Data Diri</h1>
+        <h1 class="font-bold text-2xl py-1 ml-2 px-2 text-blue-800">Data Diri & Tautan</h1>
         <div class="border-2 border-gray-200 mt-1 rounded-lg p-4 bg-blue-400 w-full shadow-brutal-blue md:max-w-3xl">
           <p class="text-white">
-            Halaman Anda bisa dilihat di: <RouterLink target='_blank' :to='username' class='text-sm bg-white text-blue-500 px-2 rounded-md'>{{ webUrl }}/{{ username }}</RouterLink>
+            Halaman Anda bisa dilihat di: <RouterLink target='_blank' :to='username' class='font-semibold text-sm bg-white text-blue-500 px-2 rounded-md'>{{ webUrl }}/{{ username }}</RouterLink>
           </p>
         </div>
         <div class="flex justify-center items-center mt-6">
           <div class="bg-gradient-to-t from-blue-800 to-blue-500 border-2 border-gray-300 text-white p-8 rounded-lg w-90">
-            <h2 class="text-2xl text-center mb-4">Ubah Data Diri</h2>
+            <h2 class="text-2xl text-center mb-4 font-bold">Ubah Data Diri</h2>
             <form @submit.prevent="handleSubmit">
               <div class="mb-4">
                 <p class="text-white text-center">Upload gambar dengan ukuran maksimal 300kb untuk foto profil</p>
@@ -26,7 +28,7 @@
                 <label for="bio" class="block mb-2">Update Bio</label>
                 <textarea id="bio" name="bio" v-model="bio" class="w-full text-blue-800 px-4 py-2 rounded-md bg-white focus:outline-none focus:bg-blue-100" rows="4"></textarea>
               </div>
-              <button type="submit" class="w-full bg-white text-blue-500 hover:bg-blue-100 py-2 px-4 rounded-md focus:outline-none">Simpan</button>
+              <button type="submit" class="font-semibold w-full bg-white text-blue-500 hover:bg-blue-100 py-2 px-4 rounded-md focus:outline-none">Simpan</button>
               <p v-if="errorMessage" class="text-white mt-2">{{ errorMessage }}</p>
             </form>
           </div>
@@ -44,11 +46,11 @@
                 </div>
                 <div class="flex-grow">
                   <div v-if="element.type === 'button'">
-                    <h3 class="text-blue-800">{{ element.title }}</h3>
+                    <h3 class="text-blue-800 font-semibold">{{ element.title }}</h3>
                     <p class="bg-gray-100 rounded-md text-sm px-1 text-blue-500 mt-2 break-all">{{ element.url }}</p>
                   </div>
                   <div v-else-if="element.type === 'header'">
-                    <h3 class="text-blue-800">{{ element.title }}</h3>
+                    <h3 class="font-semibold text-blue-800">{{ element.title }}</h3>
                   </div>
                   <div class="flex justify-between items-center mt-2">
                     <div class="space-x-1">
@@ -62,12 +64,12 @@
               </div>
             </template>
           </draggable>
-          <p v-else class="text-center mt-4 text-blue-500">Belum ada tautan maupun header. Tambahkan dengan klik tombol di atas.</p>
+          <p v-else class="font-semibold text-center mt-4 text-blue-500">Belum ada tautan maupun header. Tambahkan dengan klik tombol di atas.</p>
         </div>
         <!-- Modal Form -->
         <div v-if="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div class="bg-white p-4 rounded-lg w-80">
-            <h2 class="text-blue-800 text-xl mb-4">{{ modalType === 'button' ? 'Tambah Link' : 'Tambah Header' }}</h2>
+            <h2 class="text-blue-800 text-xl mb-4 font-semibold text-center">{{ modalType === 'button' ? 'Tambah Link' : 'Tambah Header' }}</h2>
             <form @submit.prevent="handleModalSubmit">
               <div class="mb-4">
                 <label for="modalTitle" class="block text-blue-800 mb-2">Judul</label>
@@ -85,8 +87,8 @@
                 </div>
               </label>
               <div v-if="modalError" class="text-blue-500 mb-4">{{ modalError }}</div>
-              <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none mt-2">Simpan</button>
-              <button @click="closeModal" type="button" class="w-full mt-2 bg-blue-800 text-blue-100 py-2 px-4 rounded-md focus:outline-none">Batal</button>
+              <button type="submit" class="font-semibold w-full bg-blue-500 text-white py-2 px-4 rounded-md focus:outline-none mt-2">Simpan</button>
+              <button @click="closeModal" type="button" class="font-semibold w-full mt-2 bg-blue-800 text-blue-100 py-2 px-4 rounded-md focus:outline-none">Batal</button>
             </form>
           </div>
         </div>
@@ -210,7 +212,7 @@ export default {
     };
 
     const isValidUrl = (url) => {
-      const urlPattern = new RegExp(/^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/);
+      const urlPattern = new RegExp(/^(https?:\/\/)(www\.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(\/[a-zA-Z0-9#_.-]+)*(\/[a-zA-Z0-9#_.-]*)?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)*$/);
       return !!urlPattern.test(url);
     };
 
