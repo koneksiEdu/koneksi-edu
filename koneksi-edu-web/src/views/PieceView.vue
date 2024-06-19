@@ -24,18 +24,7 @@
             <option value="Design">Branding dan Design Grafis</option>
           </select>
           <QuillEditor v-model:content="content" :options="editorOptions" class="mb-4" />
-          <input
-            type="file"
-            @change="handleImage"
-            class="mt-4 mb-4"
-          />
-          <input
-            type="number"
-            v-model="price"
-            placeholder="Point"
-            class="w-full p-2 mb-4 border rounded"
-          />
-          <div class="flex space-x-2">
+          <div class="flex mt-4 space-x-2">
             <button @click="createPost" class="bg-blue-500 text-white px-4 py-2 rounded">
               Create Post
             </button>
@@ -47,17 +36,13 @@
 </template>
 
 <script setup>
-import { ref, onBeforeUnmount } from 'vue';
+import { ref } from 'vue';
 import QuillEditor from '@/components/PieceView/QuillEditor.vue';
 import { supabase } from '@/lib/supabaseClient';
-import NavPartial from '@/components/NavPartial.vue';
 
 const title = ref('');
 const category = ref('');
 const content = ref('');
-const image = ref(null);
-const price = ref(0);
-const fileExt = ref('')
 
 const editorOptions = {
   theme: 'snow',
@@ -71,51 +56,15 @@ const editorOptions = {
       ['clean']
     ]
   }
-};
-
-
-const handleImage = (event) => {
-  const selectedFile = event.target.files[0];
-  image.value = selectedFile;
-} 
-const uploadImage = async (image, name) => {
-  const file = image
-  fileExt.value = file.name.split('.').pop();
-  if (file) {
-    const { data, error } = await supabase.storage
-      .from('blog-images')
-      .upload(`${name}`, file);
-    if (error) {
-      console.error(error);
-    } else {
-      image.value = data.Key;
-    }
-  }
-};
-
-const convertToURI = (str) => {
-  return encodeURIComponent(
-    str
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '') // Hapus karakter yang tidak diizinkan
-      .trim() // Hapus spasi di awal dan akhir
-      .replace(/[\s_-]+/g, '-') // Ganti spasi dan underscore dengan tanda hubung
-      .replace(/^-+|-+$/g, '') // Hapus tanda hubung di awal dan akhir
-  );
-};
+}; 
 
 const createPost = async () => {
-  const uriTitle = convertToURI(title.value)
-  uploadImage (image.value, uriTitle)
   const { data, error } = await supabase.from('posts').insert([
     {
       title: title.value,
       category: category.value,
       content: content.value,
       isactive: false,
-      price: price.value,
-      image: `${uriTitle}.${fileExt.value}`,
-      uri: uriTitle
     }
   ]);
   if (error) {
@@ -130,20 +79,6 @@ const resetForm = () => {
   title.value = '';
   category.value = '';
   content.value = '';
-  image.value = '';
-  price.value = 0;
 };
 
-const deleteImage = async (imagePath) => {
-  const { error } = await supabase.storage.from('blog-images').remove([imagePath]);
-  if (error) {
-    console.error('Error deleting image:', error);
-  }
-};
-
-onBeforeUnmount(async () => {
-  if (image.value) {
-    await deleteImage(image.value);
-  }
-});
 </script>

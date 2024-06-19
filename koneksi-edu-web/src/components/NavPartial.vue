@@ -33,7 +33,7 @@ export default {
       { name: "DATA DIRI & TAUTAN", link: "/dashboard" },
       { name: "WIDGET", link: "#" },
       { name: "TAMPILAN", link: "#" },
-      { name: "JASA & PRODUK KAMI", link: "/dashboard/service" },
+      { name: "APLIKASI", link: "/dashboard/service" },
       { name: "PERAN", link: "#" },
       { name: "KELUAR", link: "/" }
     ];
