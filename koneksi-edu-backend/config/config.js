@@ -11,7 +11,7 @@ export const PPOBConfig = {
     apiUrlPrepaid: 'https://vip-reseller.co.id/api/prepaid',
     apiKey: process.env.PPOB_API,
     apiId: process.env.PPOB_ID,
-    sign: process.env.SIGN
+    sign: process.env.PPOB_SIGN
 };
 
 export const PORT = process.env.PORT || 3000;
