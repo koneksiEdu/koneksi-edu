@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-2xl font-bold mb-2">
+    <h1 class="text-2xl font-bold text-center text-blue-700 mb-2">
       {{ link.title }}
     </h1>
   </template>

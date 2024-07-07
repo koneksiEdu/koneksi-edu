@@ -8,6 +8,7 @@ import DashboardView from '../views/DashboardView.vue'
 import UserPageView from '@/views/UserPageView.vue'
 import PieceView from '@/views/PieceView.vue'
 import ServiceView from '@/views/ServiceView.vue'
+import WidgetView from '@/views/WidgetView.vue'
 import { useAuthStore } from '../stores/auth';
 import {supabase} from '@/lib/supabaseClient'
 
@@ -61,6 +62,11 @@ const router = createRouter({
       path: '/dashboard/service',
       name: 'service',
       component: ServiceView
+    },
+    {
+      path: '/dashboard/widget',
+      name: 'scene',
+      component: WidgetView
     }
   ]
 })
@@ -110,7 +116,37 @@ router.beforeEach(async(to, from, next) => {
     } else {
       next("/login")
     }
- }else if(to.name === "piece") {
+ } else if(to.name === "dashboard/service") {
+  if(authStore.user){
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authStore.user.id)
+      .single()
+    if (data.username !== null && authStore.user) {
+      next()
+    } else {
+      next("/start")
+    } 
+  } else {
+    next("/login")
+  }
+} else if(to.name === "dashboard/widget") {
+  if(authStore.user){
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authStore.user.id)
+      .single()
+    if (data.username !== null && authStore.user) {
+      next()
+    } else {
+      next("/start")
+    } 
+  } else {
+    next("/login")
+  }
+} else if(to.name === "piece") {
     if(authStore.user){
       const { data, error } = await supabase
         .from('profiles')

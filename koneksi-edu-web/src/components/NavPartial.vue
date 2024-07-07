@@ -31,7 +31,7 @@ export default {
     const imgUrl = ref("");
     const items = [
       { name: "DATA DIRI & TAUTAN", link: "/dashboard" },
-      { name: "WIDGET", link: "#" },
+      { name: "WIDGET", link: "/dashboard/widget" },
       { name: "TAMPILAN", link: "#" },
       { name: "APLIKASI", link: "/dashboard/service" },
       { name: "PERAN", link: "#" },
