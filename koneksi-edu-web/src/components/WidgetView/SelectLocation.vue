@@ -33,7 +33,7 @@ export default {
               map.value.removeLayer(marker.value);
             }
             marker.value = L.marker(userLatLng).addTo(map.value);
-            map.value.setView(userLatLng, 13);
+            map.value.setView(userLatLng, 15);
             emit('location-selected', userLatLng);
           },
           (error) => {
@@ -47,9 +47,7 @@ export default {
 
     onMounted(() => {
       map.value = L.map('map').setView([-2.5, 118.0], 4);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(map.value);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map.value);
 
       map.value.on('click', onMapClick);
     });
@@ -65,8 +63,8 @@ export default {
 
 <style scoped>
 #map {
-  height: 300px;
-  width: 300px;
+  height: 240px;
+  width: 240px;
   margin: 0 auto;
 }
 
@@ -76,7 +74,7 @@ export default {
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
-  border: none;
+  border: 2px solid white;
   border-radius: 5px;
   cursor: pointer;
 }
