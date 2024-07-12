@@ -69,7 +69,7 @@ export default {
         let { data, error } = await supabase
           .from('carousell_list')
           .select('*')
-          .eq('user_id', uid.value);
+          .eq('user_id', uid.value.id);
 
         if (error) throw error;
 
@@ -81,7 +81,14 @@ export default {
 
     watch(() => authStore.currentUser, async (newVal) => {
       if (newVal) {
-        uid.value = newVal.id;
+        let { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', newVal.id)
+          .single();
+
+        if(error) throw error;
+        uid.value = data
         await fetchCarouselLinks();
       }
     }, { immediate: true });
@@ -129,9 +136,10 @@ export default {
       if (!validateModal()) return;
 
       const newLink = {
-        user_id: uid.value,
+        user_id: uid.value.id,
         is_active: modalCheckisActive.value,
         url: modalUrl.value,
+        username: uid.value.username,
       };
 
       try {

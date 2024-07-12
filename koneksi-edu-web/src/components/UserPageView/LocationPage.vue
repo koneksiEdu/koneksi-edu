@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-4 animate__animated animate__fadeIn relative" v-if="isExist">
+  <div class="mt-2 animate__animated animate__fadeIn relative" v-if="isExist">
     <h1 class="text-2xl font-bold text-center text-blue-700 mb-2">
       Lokasi Kami
     </h1>
@@ -20,7 +20,6 @@ const isExist = ref(false);
 const address = ref(null);
 
 const checkMap = async (username) => {
-  console.log('Checking map for user:', username);
   const { data: existingLocation } = await supabase
     .from('user_location')
     .select('*')

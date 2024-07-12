@@ -16,6 +16,7 @@
         </div>
         <div class="bg-white bg-opacity-50 p-2 rounded-md mt-2 h-[520px] overflow-y-auto hidden-scrollbar">
           <LinksPage/>
+          <CarousellPage ref="komponenCarousell"/>
           <LocationPage ref="komponenLokasi" />
         </div>
       </div>
@@ -29,13 +30,15 @@ import { useRoute } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient.js';
 import LinksPage from '@/components/UserPageView/LinksPage.vue';
 import LocationPage from '@/components/UserPageView/LocationPage.vue';
+import CarousellPage from '@/components/UserPageView/CarousellPage.vue';
 import TypewriterComponent from '@/components/TypeWriterEffect.vue';
 
 export default {
   components: {
     TypewriterComponent,
     LinksPage,
-    LocationPage
+    LocationPage,
+    CarousellPage
   },
   setup() {
     const route = useRoute();
@@ -44,6 +47,7 @@ export default {
     const bio = ref("");
     const errorMsg = ref("");
     const komponenLokasi = ref(null);
+    const komponenCarousell = ref(null);
 
     const fetchProfile = async (newUsername) => {
       try {
@@ -62,7 +66,7 @@ export default {
           imgUrl.value = `https://lkyubyoimdryxsrpsbli.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`;
         }
         bio.value = profile.bio;
-        errorMsg.value = ""; // Clear any previous error
+        errorMsg.value = "";
       } catch (fetchError) {
         console.error("Error fetching profile:", fetchError);
         errorMsg.value = "Profil tidak ditemukan atau kesalahan terjadi saat mengambil data profil.";
@@ -73,9 +77,12 @@ export default {
 
     onMounted(async () => {
       await fetchProfile(username.value);
-      await nextTick(); // Wait for the DOM to update
+      await nextTick();
       if (komponenLokasi.value) {
         komponenLokasi.value.checkMap(username.value);
+      }
+      if (komponenCarousell.value) {
+        komponenCarousell.value.loadCarousell(username.value)
       }
     });
 
@@ -84,7 +91,8 @@ export default {
       imgUrl,
       bio,
       errorMsg,
-      komponenLokasi
+      komponenLokasi,
+      komponenCarousell
     };
   }
 };
