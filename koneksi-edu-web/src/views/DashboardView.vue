@@ -69,7 +69,7 @@
         <!-- Modal Form -->
         <div v-if="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div class="bg-white p-4 rounded-lg w-80">
-            <h2 class="text-blue-800 text-xl mb-4 font-semibold text-center">{{ modalType === 'button' ? 'Tambah Link' : 'Tambah Header' }}</h2>
+            <h2 class="text-blue-800 text-xl mb-4 font-semibold text-center">{{ modalType === 'button' ? 'Link' : 'Header' }}</h2>
             <form @submit.prevent="handleModalSubmit">
               <div class="mb-4">
                 <label for="modalTitle" class="block text-blue-800 mb-2">Judul</label>
@@ -289,7 +289,7 @@ export default {
         timer: 3000,
         timerProgressBar: true,
         customClass: {
-          title: 'font-cornelia-sans text-blue-800 font-light',
+          title: 'text-blue-800 font-light',
           timerProgressBar: 'bg-blue-800',
         },
         didOpen: (toast) => {

@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center min-h-screen bg-gradient-to-r from-pink-500 py-2 to-yellow-500">
-    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between" style="background: url('/ppob-vn/office1.png') no-repeat center center; background-size: cover;">
+    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between" :style="{ background: `url('/ppob-vn/office1.png') no-repeat center center`, backgroundSize: 'cover' }">
       <div v-if="errorMsg" class="text-red-500 mb-4">
         {{ errorMsg }}
       </div>
@@ -16,6 +16,7 @@
         </div>
         <div class="bg-white bg-opacity-50 p-2 rounded-md mt-2 h-[520px] overflow-y-auto hidden-scrollbar">
           <LinksPage/>
+          <LocationPage ref="komponenLokasi" />
         </div>
       </div>
     </div>
@@ -23,16 +24,18 @@
 </template>
 
 <script>
-import { ref, watch } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient.js';
 import LinksPage from '@/components/UserPageView/LinksPage.vue';
-import TypewriterComponent from '@/components/TypeWriterEffect.vue'
+import LocationPage from '@/components/UserPageView/LocationPage.vue';
+import TypewriterComponent from '@/components/TypeWriterEffect.vue';
 
 export default {
   components: {
     TypewriterComponent,
-    LinksPage
+    LinksPage,
+    LocationPage
   },
   setup() {
     const route = useRoute();
@@ -40,6 +43,7 @@ export default {
     const imgUrl = ref("");
     const bio = ref("");
     const errorMsg = ref("");
+    const komponenLokasi = ref(null);
 
     const fetchProfile = async (newUsername) => {
       try {
@@ -54,12 +58,9 @@ export default {
         if (!profile) {
           throw new Error("Profile not found");
         }
-        if(profile.avatar_url){
-          console.log(true)
+        if (profile.avatar_url) {
           imgUrl.value = `https://lkyubyoimdryxsrpsbli.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`;
-        }else(
-          console.log(false)
-        )
+        }
         bio.value = profile.bio;
         errorMsg.value = ""; // Clear any previous error
       } catch (fetchError) {
@@ -67,22 +68,23 @@ export default {
         errorMsg.value = "Profil tidak ditemukan atau kesalahan terjadi saat mengambil data profil.";
         imgUrl.value = "";
         bio.value = "";
-
       }
     };
 
-    fetchProfile(username.value);
-
-    watch(() => route.params.id, (newUsername) => {
-      username.value = newUsername;
-      fetchProfile(newUsername);
+    onMounted(async () => {
+      await fetchProfile(username.value);
+      await nextTick(); // Wait for the DOM to update
+      if (komponenLokasi.value) {
+        komponenLokasi.value.checkMap(username.value);
+      }
     });
 
     return {
       username,
       imgUrl,
       bio,
-      errorMsg
+      errorMsg,
+      komponenLokasi
     };
   }
 };
