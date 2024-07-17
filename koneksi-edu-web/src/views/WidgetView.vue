@@ -6,7 +6,7 @@
         <h1 class="font-bold text-2xl py-1 ml-2 px-2 text-blue-800">Widget</h1>
         <div class="border-2 border-gray-200 mt-1 rounded-lg p-4 bg-blue-400 w-full shadow-brutal-blue md:max-w-3xl">
           <p class="text-white">
-            Halaman widget hanya bisa diakses oleh user premium
+            Pada versi prototype ini, semua widget bisa diakses
           </p>
         </div>
         <div class="flex justify-center items-center mt-6">

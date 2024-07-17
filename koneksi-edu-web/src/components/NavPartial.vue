@@ -34,7 +34,7 @@ export default {
       { name: "WIDGET", link: "/dashboard/widget" },
       { name: "TAMPILAN", link: "#" },
       { name: "APLIKASI", link: "/dashboard/service" },
-      { name: "PERAN", link: "#" },
+      { name: "KIOS", link: "/dashboard/kios" },
       { name: "KELUAR", link: "/" }
     ];
     const name = ref("")
@@ -75,7 +75,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-/* Tambahkan style khusus jika diperlukan */
-</style>

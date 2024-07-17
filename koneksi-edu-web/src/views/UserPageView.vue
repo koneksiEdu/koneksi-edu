@@ -14,10 +14,37 @@
             </div>
           </div>
         </div>
-        <div class="bg-white bg-opacity-50 p-2 rounded-md mt-2 h-[520px] overflow-y-auto hidden-scrollbar">
-          <LinksPage/>
-          <CarousellPage ref="komponenCarousell"/>
-          <LocationPage ref="komponenLokasi" />
+        <div v-if="isKioskActive" class="mx-20 my-2 bg-gray-700 rounded-full flex animate__animated animate__fadeIn">
+          <button 
+            @click="toggleLinkOrKiosk(true)" 
+            :class="[
+              'flex-1 font-bold py-2 px-4 text-center animate__animated',
+              linkOrKiosk ? 'bg-white text-blue-400 rounded-full animate__slideInRight' : 'text-white'
+            ]"
+          >
+            <i class="bi bi-link-45deg"></i>
+          </button>
+          <button 
+            @click="toggleLinkOrKiosk(false)" 
+            :class="[
+              'flex-1 font-bold py-2 px-4 text-center animate__animated',
+              !linkOrKiosk ? 'bg-white text-blue-400 rounded-full animate__slideInLeft' : 'text-white'
+            ]"
+          >
+            <i class="bi bi-bag-heart"></i>
+          </button>
+        </div>
+        <div class="bg-white bg-opacity-50 p-2 rounded-md mt-2 h-[520px] custom-scrollbar">
+          <div v-show="linkOrKiosk">
+            <LinksPage/>
+            <CarousellPage ref="komponenCarousell"/>
+            <LocationPage ref="komponenLokasi" />
+          </div>
+          <div v-show="!linkOrKiosk">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <ProductCard v-for="product in products" :key="product.id" :product="product" />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -32,13 +59,15 @@ import LinksPage from '@/components/UserPageView/LinksPage.vue';
 import LocationPage from '@/components/UserPageView/LocationPage.vue';
 import CarousellPage from '@/components/UserPageView/CarousellPage.vue';
 import TypewriterComponent from '@/components/TypeWriterEffect.vue';
+import ProductCard from '@/components/UserPageView/ProductCardPage.vue'
 
 export default {
   components: {
     TypewriterComponent,
     LinksPage,
     LocationPage,
-    CarousellPage
+    CarousellPage,
+    ProductCard
   },
   setup() {
     const route = useRoute();
@@ -48,6 +77,9 @@ export default {
     const errorMsg = ref("");
     const komponenLokasi = ref(null);
     const komponenCarousell = ref(null);
+    const isKioskActive = ref(null);
+    const linkOrKiosk = ref(true);
+    const products = ref([]);
 
     const fetchProfile = async (newUsername) => {
       try {
@@ -66,6 +98,7 @@ export default {
           imgUrl.value = `https://lkyubyoimdryxsrpsbli.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`;
         }
         bio.value = profile.bio;
+        isKioskActive.value = profile.kios_status;
         errorMsg.value = "";
       } catch (fetchError) {
         console.error("Error fetching profile:", fetchError);
@@ -75,14 +108,34 @@ export default {
       }
     };
 
+    const fetchProducts = async () => {
+      try {
+        const { data: productsData, error: productsError } = await supabase
+          .from('kios_products')
+          .select('*')
+          .eq('username', username.value);
+        if (productsError) {
+          throw productsError;
+        }
+        products.value = productsData;
+      } catch (fetchError) {
+        console.error("Error fetching products:", fetchError);
+      }
+    };
+
+    const toggleLinkOrKiosk = (status) => {
+      linkOrKiosk.value = status;
+    };
+
     onMounted(async () => {
       await fetchProfile(username.value);
+      await fetchProducts();
       await nextTick();
       if (komponenLokasi.value) {
         komponenLokasi.value.checkMap(username.value);
       }
       if (komponenCarousell.value) {
-        komponenCarousell.value.loadCarousell(username.value)
+        komponenCarousell.value.loadCarousell(username.value);
       }
     });
 
@@ -92,19 +145,35 @@ export default {
       bio,
       errorMsg,
       komponenLokasi,
-      komponenCarousell
+      komponenCarousell,
+      linkOrKiosk,
+      toggleLinkOrKiosk,
+      isKioskActive,
+      products
     };
   }
 };
 </script>
 
-<style>
-.hidden-scrollbar::-webkit-scrollbar {
-  display: none;
+<style scoped>
+.custom-scrollbar {
+  scrollbar-width: thin;
+  -ms-overflow-style: none;
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch; 
 }
 
-.hidden-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px; 
+  height: 5px; 
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); 
+  border-radius: 10px;
 }
 </style>

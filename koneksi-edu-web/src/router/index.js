@@ -9,6 +9,7 @@ import UserPageView from '@/views/UserPageView.vue'
 import PieceView from '@/views/PieceView.vue'
 import ServiceView from '@/views/ServiceView.vue'
 import WidgetView from '@/views/WidgetView.vue'
+import KiosView from '@/views/KiosView.vue'
 import { useAuthStore } from '../stores/auth';
 import {supabase} from '@/lib/supabaseClient'
 
@@ -67,7 +68,12 @@ const router = createRouter({
       path: '/dashboard/widget',
       name: 'scene',
       component: WidgetView
-    }
+    },
+    {
+      path: '/dashboard/kios',
+      name: 'kios',
+      component: KiosView
+    },
   ]
 })
 
