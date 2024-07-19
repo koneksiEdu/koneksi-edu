@@ -41,7 +41,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { supabase } from '@/lib/supabaseClient.js';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/stores';
 
 const props = defineProps({
   editProduct: Object,

@@ -1,11 +1,11 @@
 <template>
-  <div class="rounded overflow-hidden shadow-lg bg-white flex flex-col justify-between">
+  <div @click="showDetail" class="animate__animated animate__bounceIn rounded overflow-hidden shadow-lg bg-white cursor-pointer">
     <img class="w-full" :src="product.image_url" :alt="product.title">
-    <div class="flex flex-col justify-center items-center px-6 py-4">
+    <div class="px-6 py-4">
       <div class="font-bold text-center text-blue-400 text-sm mb-2 line-clamp-2">
         {{ product.title }}
       </div>
-      <p class="text-gray-700 font semibold text-[10px] text-center price-text">
+      <p class="text-gray-700 text-[10px] text-center price-text">
         {{ formattedPrice }}
       </p>
     </div>
@@ -27,6 +27,11 @@ export default {
         style: 'currency',
         currency: 'IDR'
       }).format(this.product.price);
+    }
+  },
+  methods: {
+    showDetail() {
+      this.$emit('show-detail', this.product);
     }
   }
 }

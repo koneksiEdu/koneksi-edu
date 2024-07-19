@@ -49,7 +49,7 @@
 <script>
 import { ref, watch } from 'vue';
 import { supabase } from '@/lib/supabaseClient.js';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/stores';
 import Swal from 'sweetalert2';
 
 export default {

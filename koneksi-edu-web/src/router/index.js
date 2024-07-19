@@ -10,7 +10,8 @@ import PieceView from '@/views/PieceView.vue'
 import ServiceView from '@/views/ServiceView.vue'
 import WidgetView from '@/views/WidgetView.vue'
 import KiosView from '@/views/KiosView.vue'
-import { useAuthStore } from '../stores/auth';
+import PaymentPageView from '@/views/PaymentPageView.vue'
+import { useAuthStore } from '../stores/stores';
 import {supabase} from '@/lib/supabaseClient'
 
 const router = createRouter({
@@ -73,6 +74,11 @@ const router = createRouter({
       path: '/dashboard/kios',
       name: 'kios',
       component: KiosView
+    },
+    {
+      path: '/paymentPage/:id',
+      name: 'paymentPage',
+      component: PaymentPageView
     },
   ]
 })

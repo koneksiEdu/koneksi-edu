@@ -29,7 +29,7 @@
 <script>
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabaseClient.js'
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/stores';
 import Swal from 'sweetalert2'
 import router from '@/router';
 
@@ -83,15 +83,27 @@ export default {
           return
         }
       } else {
-        Swal.fire({
-          title: "Login",
-          text: "Halamanmu berhasil dibuat!",
-          icon: "success"
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            title: 'text-blue-800 font-light',
+            timerProgressBar: 'bg-blue-800',
+          },
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+          }
         });
+        Toast.fire({
+          title: 'Ubah password berhasil! Kamu akan diarahkan ke halaman dashboard'
+        })
         router.push("/dashboard")
       }
     }
-
     return {
       username,
       errorMessage,

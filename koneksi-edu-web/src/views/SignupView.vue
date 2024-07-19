@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-sm mx-6">
-      <h2 class="text-2xl font-bold mb-6 text-center">Daftar</h2>
+      <h2 class="text-2xl font-bold mb-6 text-blue-500 text-center">Daftar</h2>
       <form @submit.prevent="signup" class="space-y-4">
           <input
             v-model="email"
@@ -52,7 +52,7 @@
   
 <script>
 import { computed, ref } from 'vue';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '../stores/stores';
 import PasswordToggle from '@/components/PasswordToggle.vue';
 
 export default {

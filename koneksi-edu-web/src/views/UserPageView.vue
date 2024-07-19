@@ -1,6 +1,7 @@
 <template>
   <div class="flex justify-center min-h-screen bg-gradient-to-r from-pink-500 py-2 to-yellow-500">
-    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between" :style="{ background: `url('/ppob-vn/office1.png') no-repeat center center`, backgroundSize: 'cover' }">
+    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between">
+    <!-- <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between" :style="{ background: `url('/ppob-vn/office1.png') no-repeat center center`, backgroundSize: 'cover' }"> -->
       <div v-if="errorMsg" class="text-red-500 mb-4">
         {{ errorMsg }}
       </div>
@@ -34,6 +35,14 @@
             <i class="bi bi-bag-heart"></i>
           </button>
         </div>
+
+        <!-- Container untuk CartIcon -->
+        <div v-show="!linkOrKiosk" class="z-10 absolute w-24 left-1/2 transform -translate-x-1/2 translate-y-2">
+          <div class="bg-white rounded-md shadow-ms flex justify-center items-center mb-4">
+            <CartIcon ref="cartIcon" @checkoutTriggered="openCheckoutModal"/>
+          </div>
+        </div>
+        
         <div class="bg-white bg-opacity-50 p-2 rounded-md mt-2 h-[520px] custom-scrollbar">
           <div v-show="linkOrKiosk">
             <LinksPage/>
@@ -41,14 +50,25 @@
             <LocationPage ref="komponenLokasi" />
           </div>
           <div v-show="!linkOrKiosk">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <ProductCard v-for="product in products" :key="product.id" :product="product" />
+            <div class="mt-10 grid grid-cols-2 gap-4">
+              <ProductCard 
+                v-for="product in products" 
+                :key="product.id" 
+                :product="product" 
+                @show-detail="openModal" />
             </div>
           </div>
         </div>
       </div>
     </div>
+    <ProductDetailModal 
+      v-if="selectedProduct" 
+      :isOpen="isModalOpen" 
+      :product="selectedProduct"
+      @productAdded = "getCartData"
+      @close="closeModal"/>
   </div>
+  <CheckoutPage v-if="isCartModalOpen" :isOpen="isCartModalOpen" @updateNewCart="getCartData" @close="closeCheckoutModal"/>
 </template>
 
 <script>
@@ -60,6 +80,9 @@ import LocationPage from '@/components/UserPageView/LocationPage.vue';
 import CarousellPage from '@/components/UserPageView/CarousellPage.vue';
 import TypewriterComponent from '@/components/TypeWriterEffect.vue';
 import ProductCard from '@/components/UserPageView/ProductCardPage.vue'
+import ProductDetailModal from '@/components/UserPageView/ProductCardPage/ProductDetailModal.vue';
+import CartIcon from '@/components/UserPageView/CartIconPage.vue'
+import CheckoutPage from '@/components/UserPageView/CheckoutPage.vue'
 
 export default {
   components: {
@@ -67,7 +90,10 @@ export default {
     LinksPage,
     LocationPage,
     CarousellPage,
-    ProductCard
+    ProductCard,
+    ProductDetailModal,
+    CartIcon,
+    CheckoutPage
   },
   setup() {
     const route = useRoute();
@@ -80,6 +106,32 @@ export default {
     const isKioskActive = ref(null);
     const linkOrKiosk = ref(true);
     const products = ref([]);
+    const selectedProduct = ref(null);
+    const isModalOpen = ref(false);
+    const cartIcon = ref(null)
+    const isCartModalOpen = ref(false);
+
+    const openModal = (product) => {
+      selectedProduct.value = product;
+      isModalOpen.value = true;
+    };
+
+    const openCheckoutModal = () =>{
+      isCartModalOpen.value = true;
+    }
+
+    const closeCheckoutModal = () => {
+      isCartModalOpen.value = false;
+    };
+
+    const closeModal = () => {
+      isModalOpen.value = false;
+      selectedProduct.value = null;
+    };
+
+    const getCartData = () => {
+      cartIcon.value.updateItemValue()
+    };
 
     const fetchProfile = async (newUsername) => {
       try {
@@ -149,7 +201,16 @@ export default {
       linkOrKiosk,
       toggleLinkOrKiosk,
       isKioskActive,
-      products
+      products,
+      selectedProduct,
+      isModalOpen,
+      openModal,
+      closeModal,
+      getCartData,
+      cartIcon,
+      isCartModalOpen,
+      closeCheckoutModal,
+      openCheckoutModal
     };
   }
 };

@@ -45,7 +45,7 @@
 
 <script>
 import { computed, ref } from 'vue';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '../stores/stores';
 import PasswordToggle from '@/components/PasswordToggle.vue';
 
 export default {

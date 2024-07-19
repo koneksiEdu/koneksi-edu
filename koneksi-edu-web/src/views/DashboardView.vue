@@ -102,7 +102,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { supabase } from '@/lib/supabaseClient.js';
 import NavPartial from '@/components/NavPartial.vue';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/stores';
 import Swal from 'sweetalert2';
 import draggable from 'vuedraggable';
 

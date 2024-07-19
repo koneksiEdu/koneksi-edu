@@ -1,7 +1,7 @@
 <script setup>
 import { watchEffect, ref } from 'vue';
 import { RouterView } from 'vue-router'
-import { useAuthStore } from './stores/auth';
+import { useAuthStore } from './stores/stores';
 
 const authStore = useAuthStore();
 const authData = ref([]);

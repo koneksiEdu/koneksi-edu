@@ -16,7 +16,7 @@ import { supabase } from '@/lib/supabaseClient'
 import ButtonComponent from '@/components/UserPageView/LinksPage/ButtonComponent.vue'
 import HeaderComponent from '@/components/UserPageView/LinksPage/HeaderComponent.vue'
 import { useRoute } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/stores';
 
 const authStore = useAuthStore();
 const route = useRoute();

@@ -16,7 +16,22 @@
         </div>
 
         <div v-if="isActive">
-          <!-- <p>Chat id harus diisi untuk notifikasi pesanan, silahkan cari bot pikiosBot di telegram dan kirim pesan /start untuk mendapatkan chat_id.</p> -->
+          <form @submit.prevent="changePhone">
+            <label for="phone" class="mt-4 block mb-2 text-blue-800">Nomor Hp</label>
+            <span class="text-blue-400">+62 </span>
+            <input 
+              inputmode="numeric" 
+              pattern="^8\d{9,14}$" 
+              v-model.number="form.phone" 
+              id="phone" 
+              name="phone" 
+              class="mt-1 w-64 text-blue-800 px-4 py-2 rounded-md bg-gray-100 focus:outline-blue-400 outline outline-gray-400" 
+              type="text" 
+              required
+              title="Nomor Hp harus dimulai dengan 8 dan jumlahnya minimal 10 digit maksimal 15 digit"
+            />  
+            <button type="submit" class="ml-1 bg-blue-400 text-white p-2 rounded-md">Ubah</button>
+          </form>
           <!-- Modal Form -->
           <InsertProductModal ref="productFormModal" @closeModal="closeModal" :showModal="showModal" @productAdded="fetchProducts" />
 
@@ -40,8 +55,9 @@ import InsertProductModal from '@/components/KiosView/InsertProductModal.vue';
 import ProductList from '@/components/KiosView/ProductList.vue';
 import { ref, watch } from 'vue';
 import { supabase } from '@/lib/supabaseClient.js';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/stores';
 import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2'
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -53,6 +69,9 @@ const isActive = ref(false);
 const showModal = ref(false);
 const productModal = ref(null)
 const productFormModal = ref(null)
+const form = ref({
+  phone: '81234567890',
+});
 
 watch(() => authStore.currentUser, async (newVal) => {
   if (newVal) {
@@ -68,6 +87,9 @@ watch(() => authStore.currentUser, async (newVal) => {
       }
       username.value = profile.username;
       isActive.value = profile.kios_status
+      if (profile.chat_id){
+        form.value.phone = profile.chat_id
+      }
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
@@ -76,9 +98,40 @@ watch(() => authStore.currentUser, async (newVal) => {
   }
 }, { immediate: true });
 
-
 const fetchProducts = async () => {
   productModal.value.fetchProducts()
+};
+
+const changePhone = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ chat_id: form.value.phone })
+      .eq('id', uid.value);
+    if (error) {
+      throw error;
+    }
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        title: 'text-blue-800 font-light',
+        timerProgressBar: 'bg-blue-800',
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
+    Toast.fire({
+      title: 'Nomor HP berhasil diubah!'
+    })
+  } catch (error) {
+    console.error("Error updating phone number:", error);
+  }
 };
 
 const handleProductDeleted = (productId) => {
@@ -100,12 +153,12 @@ const closeModal = () => {
   };
 };
 
-const toggleIsActive = async ( status ) => {
+const toggleIsActive = async (status) => {
   try {
     const { error } = await supabase
       .from('profiles')
       .update({ kios_status: status })
-      .eq('id', uid.value)
+      .eq('id', uid.value);
     if (error) throw error;
     isActive.value = status;
   } catch (error) {

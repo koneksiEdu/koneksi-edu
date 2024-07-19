@@ -32,7 +32,7 @@ import { ref } from 'vue';
 import { supabase } from '@/lib/supabaseClient.js';
 import Swal from 'sweetalert2';
 import InsertProductModal from './InsertProductModal.vue';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/stores';
 
 const products = ref([]);
 const showModal = ref(false);

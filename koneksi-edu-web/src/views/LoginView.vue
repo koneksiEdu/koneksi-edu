@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md mx-6">
-      <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+      <h2 class="text-2xl text-blue-500 font-bold mb-6 text-center">Login</h2>
       <form @submit.prevent="login" class="space-y-4">
           <input
             v-model="email"
@@ -43,7 +43,7 @@
   
 <script>
 import { computed, ref } from 'vue';
-import { useAuthStore } from '../stores/auth';
+import { useAuthStore } from '../stores/stores';
 import router from '@/router';
 import Swal from 'sweetalert2'
 import PasswordToggle from '@/components/PasswordToggle.vue';
@@ -80,6 +80,14 @@ export default {
           inputLabel: 'Masukan email kamu',
           inputPlaceholder: 'contoh@mail.com',
           showCancelButton: true,
+          confirmButtonColor: '#3b82f6',
+          cancelButtonColor: '#1e40af',
+          confirmButtonText: 'Kirim',
+          cancelButtonText: 'Batal',
+          customClass: {
+            title: 'text-blue-700',
+            inputLabel: 'text-blue-700'
+          },
           inputValidator: (value) => {
             if (!value) {
               return 'Email tidak boleh kosong!';
