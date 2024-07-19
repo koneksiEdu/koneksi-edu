@@ -18,7 +18,7 @@ Ini adalah aplikasi untuk membuat bio profile yang biasanya disebarkan di sosial
 
 ## Perhatian!!
 
-Dikarenakan, masih menggunakan server SMTP gratisan, saat mengirim email mungkin memerlukan waktu. Harap bersabar sampai email datang ke email Anda.
+Dikarenakan masih menggunakan server SMTP gratisan, saat mengirim email mungkin memerlukan waktu. Harap bersabar sampai email datang ke email Anda.
 
 ## DEMO
 
