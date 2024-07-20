@@ -4,17 +4,6 @@ import { telegramConfig } from '../config/config.js';
 const token = telegramConfig.apiKey;
 const bot = new TelegramBot(token);
 
-// Endpoint untuk webhook
-app.post('/webhook', (req, res) => {
-  const chatId = req.body.message.chat.id;
-  const text = `Chat ID Anda adalah: ${chatId}`;
-  
-  bot.sendMessage(chatId, text);
-
-  // Kirim response 200 OK
-  res.sendStatus(200);
-});
-
 export const teleWebhook = async (req, res) => {
   // Mengecek apakah ada pesan
   if (req.body.message) {
