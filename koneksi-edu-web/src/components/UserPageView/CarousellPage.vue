@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isImagesLoaded" class="relative animate__animated animate__fadeIn carousel-container">
+  <div v-if="isImagesLoaded && carousells.length > 0" class="relative animate__animated animate__fadeIn carousel-container">
     <h1 class="text-2xl font-bold text-center text-blue-700 mb-2">
       Galeri
     </h1>

@@ -99,7 +99,7 @@ export default {
           }
         });
         Toast.fire({
-          title: 'Ubah password berhasil! Kamu akan diarahkan ke halaman dashboard'
+          title: 'Username! Kamu akan diarahkan ke halaman dashboard'
         })
         router.push("/dashboard")
       }
