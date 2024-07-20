@@ -38,11 +38,11 @@
           <ul>
             <li v-for="(item, index) in cartItems" :key="index" class="flex text-blue-400 font-semibold justify-between items-center bg-gray-200 p-2 rounded-lg mb-2">
               <span>{{ item.judul }} x {{ item.jumlah }}</span>
-              <span>{{ item.harga }}</span>
+              <span>{{ formatPrice(item.harga) }}</span>
             </li>
           </ul>
           <div class="flex justify-between items-center mt-4">
-            <span class="text-lg text-blue-800 font-semibold">Total: {{ totalPrice }}</span>
+            <span class="text-lg text-blue-800 font-semibold">Total: {{ formatPrice(totalPrice) }}</span>
           </div>
         </div>
         <button type="submit" class="bg-blue-800 text-white px-4 py-2 rounded-lg">
@@ -92,6 +92,13 @@ const validateNama = () => {
 const validateAlamat = () => {
   errors.value.alamat = !alamat.value ? 'Alamat harus diisi' : '';
 };
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR'
+  }).format(price);
+}
 
 const getCartData = () => {
   const storedCart = JSON.parse(localStorage.getItem('cart')) || {};
