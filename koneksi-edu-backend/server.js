@@ -29,3 +29,4 @@ app.listen(PORT, () => {
 });
 
 bot.setWebHook(telegramConfig.url);
+console.log(telegramConfig.url)
