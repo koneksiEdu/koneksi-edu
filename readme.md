@@ -18,7 +18,7 @@ Ini adalah aplikasi untuk membuat bio profile yang biasanya disebarkan di sosial
 
 ## Perhatian!!
 
-Dikarenakan masih menggunakan server SMTP gratisan, saat mengirim email mungkin memerlukan waktu. Harap bersabar sampai email datang ke email Anda.
+Dikarenakan masih menggunakan server SMTP built in supabase untuk keperluan develpment dan testing, jadi dibatasi 3 email per jam. Boleh gunakan akun guest@guest.com dan password guest1234 untuk login.
 
 ## DEMO
 
