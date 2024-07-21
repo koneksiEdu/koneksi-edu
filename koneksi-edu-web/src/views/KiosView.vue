@@ -14,20 +14,21 @@
           Kios aktif, silahkan klik <span @click="toggleIsActive(false)" class="bg-white px-1 font-semibold text-blue-700 cursor-pointer">link berikut</span> untuk menonaktifkan fitur kios.
           </p>
         </div>
-
         <div v-if="isActive">
+          <div class="mt-4 border-2 border-gray-200 mt-1 rounded-lg p-4 bg-blue-400 w-full shadow-brutal-blue md:max-w-3xl">
+            <p class="text-white">
+              Untuk mendapatkan chat id wajib menggunakan <a class="bg-white px-1 font-semibold text-blue-700 cursor-pointer" target="_blank" href="https://t.me/topikselbot">telegrambot ini</a> dengan mengetik pesan <span class="bg-white px-1 font-semibold text-blue-700 cursor-pointer">/chatid</span>, respon chat mungkin lama, mohon bersabar (sekitar 1 - 3 menit), tenang untuk pemberitahuan pesanan delay hanya sekitar 5 detik.
+            </p>
+          </div>
           <form @submit.prevent="changePhone">
             <label for="phone" class="mt-4 block mb-2 text-blue-800">Chat Id</label>
             <input 
-              inputmode="numeric" 
-              pattern="^8\d{9,14}$" 
               v-model.number="form.phone" 
               id="phone" 
               name="phone" 
               class="mt-1 w-64 text-blue-800 px-4 py-2 rounded-md bg-gray-100 focus:outline-blue-400 outline outline-gray-400" 
-              type="text" 
+              type="text"
               required
-              title="Nomor Hp harus dimulai dengan 8 dan jumlahnya minimal 10 digit maksimal 15 digit"
             />  
             <button type="submit" class="ml-1 bg-blue-400 text-white p-2 rounded-md">Ubah</button>
           </form>

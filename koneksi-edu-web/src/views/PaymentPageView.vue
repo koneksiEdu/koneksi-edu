@@ -69,7 +69,7 @@ const cartItems = ref([]);
 const totalPrice = ref(0);
 const errors = ref({ nama: '', alamat: '' });
 const phone = ref("")
-const token = 'YOUR_TELEGRAM_BOT_TOKEN';
+const token = import.meta.env.VITE_TELEGRAM_BOT;
 
 onMounted( async () =>  {
   try {
@@ -108,7 +108,7 @@ const getCartData = () => {
   totalPrice.value = cartItems.value.reduce((total, item) => total + item.harga * item.jumlah, 0);
 };
 
-const submitPayment = () => {
+const submitPayment = async () => {
   validateNama();
   validateAlamat();
 
@@ -117,19 +117,21 @@ const submitPayment = () => {
   }
 
   const itemsDescription = cartItems.value
-    .map(item => `${item.judul} x ${item.jumlah} - ${item.harga}`)
-    .join(', ');
+    .map(item => `${item.judul} x ${item.jumlah} - ${formatPrice(item.harga)}`)
+    .join('\n'); // Menggunakan '\n' untuk baris baru
 
-  const message = `
-    Nama: ${nama.value}
-    Alamat: ${alamat.value}
-    Keterangan: ${keterangan.value}
-    Item: ${itemsDescription}
-    Total: ${totalPrice.value}
-  `;
+  const message = `Nama: ${nama.value}\nAlamat: ${alamat.value}\nKeterangan: ${keterangan.value}\nItem:\n${itemsDescription}\nTotal: ${formatPrice(totalPrice.value)}`;
 
-  const whatsappUrl = `https://wa.me/62${phone.value}?text=${encodeURIComponent(message)}`;
-  window.open(whatsappUrl, '_blank');
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+  try {
+    await axios.post(url, {
+      chat_id: phone.value,
+      text: message
+    });
+    alert('Pesan terkirim!');
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
 };
 
 onMounted(() => {
