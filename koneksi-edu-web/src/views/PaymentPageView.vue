@@ -58,6 +58,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient.js';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 const route = useRoute();
 const username = ref(route.params.id);
@@ -128,7 +129,24 @@ const submitPayment = async () => {
       chat_id: phone.value,
       text: message
     });
-    alert('Pesan terkirim!');
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        title: 'text-blue-800 font-light',
+        timerProgressBar: 'bg-blue-800',
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
+    Toast.fire({
+      title: 'Pesanan terkirim, tunggu konfirmasi dari penjual!'
+    })
   } catch (error) {
     console.error('Error sending message:', error);
   }
