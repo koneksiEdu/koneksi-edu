@@ -57,6 +57,7 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient.js';
+import axios from 'axios';
 
 const route = useRoute();
 const username = ref(route.params.id);
@@ -68,6 +69,7 @@ const cartItems = ref([]);
 const totalPrice = ref(0);
 const errors = ref({ nama: '', alamat: '' });
 const phone = ref("")
+const token = 'YOUR_TELEGRAM_BOT_TOKEN';
 
 onMounted( async () =>  {
   try {

@@ -32,7 +32,6 @@ export default {
     const items = [
       { name: "DATA DIRI & TAUTAN", link: "/dashboard" },
       { name: "WIDGET", link: "/dashboard/widget" },
-      { name: "TAMPILAN", link: "#" },
       { name: "APLIKASI", link: "/dashboard/service" },
       { name: "KIOS", link: "/dashboard/kios" },
       { name: "KELUAR", link: "/" }
