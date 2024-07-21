@@ -17,8 +17,7 @@
 
         <div v-if="isActive">
           <form @submit.prevent="changePhone">
-            <label for="phone" class="mt-4 block mb-2 text-blue-800">Nomor Hp</label>
-            <span class="text-blue-400">+62 </span>
+            <label for="phone" class="mt-4 block mb-2 text-blue-800">Chat Id</label>
             <input 
               inputmode="numeric" 
               pattern="^8\d{9,14}$" 
@@ -70,7 +69,7 @@ const showModal = ref(false);
 const productModal = ref(null)
 const productFormModal = ref(null)
 const form = ref({
-  phone: '81234567890',
+  phone: '',
 });
 
 watch(() => authStore.currentUser, async (newVal) => {
