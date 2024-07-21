@@ -58,6 +58,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient.js';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 
 const route = useRoute();
 const username = ref(route.params.id);
@@ -69,7 +70,7 @@ const cartItems = ref([]);
 const totalPrice = ref(0);
 const errors = ref({ nama: '', alamat: '' });
 const phone = ref("")
-const token = 'YOUR_TELEGRAM_BOT_TOKEN';
+const token = import.meta.env.VITE_TELEGRAM_BOT;
 
 onMounted( async () =>  {
   try {
@@ -108,7 +109,7 @@ const getCartData = () => {
   totalPrice.value = cartItems.value.reduce((total, item) => total + item.harga * item.jumlah, 0);
 };
 
-const submitPayment = () => {
+const submitPayment = async () => {
   validateNama();
   validateAlamat();
 
@@ -117,19 +118,38 @@ const submitPayment = () => {
   }
 
   const itemsDescription = cartItems.value
-    .map(item => `${item.judul} x ${item.jumlah} - ${item.harga}`)
-    .join(', ');
+    .map(item => `${item.judul} x ${item.jumlah} - ${formatPrice(item.harga)}`)
+    .join('\n'); // Menggunakan '\n' untuk baris baru
 
-  const message = `
-    Nama: ${nama.value}
-    Alamat: ${alamat.value}
-    Keterangan: ${keterangan.value}
-    Item: ${itemsDescription}
-    Total: ${totalPrice.value}
-  `;
+  const message = `Nama: ${nama.value}\nAlamat: ${alamat.value}\nKeterangan: ${keterangan.value}\nItem:\n${itemsDescription}\nTotal: ${formatPrice(totalPrice.value)}`;
 
-  const whatsappUrl = `https://wa.me/62${phone.value}?text=${encodeURIComponent(message)}`;
-  window.open(whatsappUrl, '_blank');
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+  try {
+    await axios.post(url, {
+      chat_id: phone.value,
+      text: message
+    });
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        title: 'text-blue-800 font-light',
+        timerProgressBar: 'bg-blue-800',
+      },
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
+    Toast.fire({
+      title: 'Pesanan terkirim, tunggu konfirmasi dari penjual!'
+    })
+  } catch (error) {
+    console.error('Error sending message:', error);
+  }
 };
 
 onMounted(() => {
