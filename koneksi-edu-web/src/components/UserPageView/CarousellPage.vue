@@ -1,6 +1,6 @@
 <template>
   <div v-if="isImagesLoaded && carousells.length > 0" class="relative animate__animated animate__fadeIn carousel-container">
-    <h1 class="text-2xl font-bold text-center text-blue-700 mb-2">
+    <h1 class="text-2xl font-bold text-center my-text mb-2">
       Galeri
     </h1>
     <div ref="carousel" class="carousel flex overflow-x-scroll snap-x snap-mandatory">
@@ -12,10 +12,10 @@
         />
       </div>
     </div>
-    <button @click="prev" class="absolute font-bold left-0 top-1/2 transform -translate-y-1/2 text-blue-800 p-2 rounded-full">
+    <button @click="prev" class="absolute font-bold left-0 top-1/2 transform -translate-y-1/2 my-text p-2 rounded-full">
       <i class="bi bi-chevron-left"></i>
     </button>
-    <button @click="next" class="absolute font-bold right-0 top-1/2 transform -translate-y-1/2 text-blue-500 p-2 rounded-full">
+    <button @click="next" class="absolute font-bold right-0 top-1/2 transform -translate-y-1/2 my-text p-2 rounded-full">
       <i class="bi bi-chevron-right"></i>
     </button>
   </div>
@@ -29,6 +29,12 @@ const carousells = ref([]);
 const error = ref(null);
 const carousel = ref(null);
 const isImagesLoaded = ref(false);
+
+defineProps({
+  props:{
+    cssVariables: Object
+  }
+})
 
 const loadCarousell = async (username) => {
   try {
@@ -108,5 +114,9 @@ defineExpose({ loadCarousell });
 
 .carousel-item {
   min-width: 100%;
+}
+
+.my-text {
+  color: var(--text-color)
 }
 </style>

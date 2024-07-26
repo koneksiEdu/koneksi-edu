@@ -2,19 +2,19 @@
   <div v-if="isOpen" class="z-20 fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
     <div class="bg-white p-6 rounded-lg shadow-lg max-w-60 w-full max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl text-blue-400 font-bold">{{ product.title }}</h2>
+        <h2 class="text-xl my-text font-bold">{{ product.title }}</h2>
         <button @click="closeModal" class="text-gray-600 hover:text-gray-900">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
       <img class="w-full mb-4" :src="product.image_url" :alt="product.title">
-      <p class="text-blue-400 mb-4">{{ product.desc }}</p>
-      <p class="bg-gray-200 p-1 rounded-md text-blue-400 mb-4">{{ formattedPrice }}</p>
-      <div class="flex items-center text-blue-400 mb-4">
+      <p class="my-text mb-4">{{ product.desc }}</p>
+      <p class="bg-gray-200 p-1 rounded-md my-text mb-4">{{ formattedPrice }}</p>
+      <div class="flex items-center my-text mb-4">
         <label for="quantity" class="mr-2">Jumlah:</label>
         <input type="number" v-model.number="quantity" id="quantity" min="1" class="border rounded p-1 w-20">
       </div>
-      <button @click="addToCart" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
+      <button @click="addToCart" class="myBtn text-white px-4 py-2 rounded">
         <i class="bi bi-cart-plus-fill"></i>
       </button>
     </div>
@@ -35,7 +35,8 @@ export default defineComponent({
     product: {
       type: Object,
       required: true
-    }
+    },
+    cssVariables: Object
   },
   setup(props, { emit }) {
     const quantity = ref(1);
@@ -111,5 +112,17 @@ export default defineComponent({
 <style scoped>
 .fixed {
   overflow-y: auto;
+}
+
+.my-text {
+  color: var(--text-color)
+}
+
+.myBtn {
+  background-color: var(--btn-main);
+}
+
+.myBtn:hover {
+  background-color: var(--btn-hover);
 }
 </style>

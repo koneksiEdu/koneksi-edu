@@ -2,7 +2,7 @@
   <div @click="showDetail" class="animate__animated animate__bounceIn rounded overflow-hidden shadow-lg bg-white cursor-pointer">
     <img class="w-full" :src="product.image_url" :alt="product.title">
     <div class="px-6 py-4">
-      <div class="font-bold text-center text-blue-400 text-sm mb-2 line-clamp-2">
+      <div class="font-bold text-center my-text text-sm mb-2 line-clamp-2">
         {{ product.title }}
       </div>
       <p class="text-gray-700 text-[10px] text-center price-text">
@@ -19,7 +19,8 @@ export default {
     product: {
       type: Object,
       required: true
-    }
+    },
+    cssVariables: Object
   },
   computed: {
     formattedPrice() {
@@ -48,7 +49,10 @@ export default {
   box-orient: vertical;
 }
 
-/* Ensuring price text wraps within the card */
+.my-text {
+  color: var(--text-color)
+}
+
 .price-text {
   white-space: pre-wrap;
   overflow-wrap: break-word;

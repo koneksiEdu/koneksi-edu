@@ -11,6 +11,7 @@ import ServiceView from '@/views/ServiceView.vue'
 import WidgetView from '@/views/WidgetView.vue'
 import KiosView from '@/views/KiosView.vue'
 import PaymentPageView from '@/views/PaymentPageView.vue'
+import AppearanceView from '@/views/AppearanceView.vue'
 import { useAuthStore } from '../stores/stores';
 import {supabase} from '@/lib/supabaseClient'
 
@@ -79,6 +80,11 @@ const router = createRouter({
       path: '/paymentPage/:id',
       name: 'paymentPage',
       component: PaymentPageView
+    },
+    {
+      path: '/appearance',
+      name: 'appearance',
+      component: AppearanceView
     },
   ]
 })

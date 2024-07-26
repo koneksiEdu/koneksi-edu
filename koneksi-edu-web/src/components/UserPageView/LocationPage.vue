@@ -1,9 +1,9 @@
 <template>
   <div class="mt-2 animate__animated animate__fadeIn relative" v-if="isExist">
-    <h1 class="text-2xl font-bold text-center text-blue-700 mb-2">
+    <h1 class="text-2xl font-bold text-center my-text mb-2">
       Lokasi Kami
     </h1>
-    <div class="absolute bottom-0 w-full text-center bg-white p-1 font-semibold text-blue-400 rounded-lg" style="z-index:100000;">
+    <div class="absolute bottom-0 w-full text-center bg-white p-1 font-semibold my-text rounded-lg" style="z-index:100000;">
       {{ address }}
     </div>
     <div class="rounded-lg" id="map" style="height:240px"></div>
@@ -14,6 +14,12 @@
 import { ref, nextTick } from 'vue';
 import L from 'leaflet';
 import { supabase } from '@/lib/supabaseClient.js';
+
+defineProps({
+  props:{
+    cssVariables: Object
+  }
+})
 
 const map = ref(null);
 const isExist = ref(false);
@@ -46,5 +52,8 @@ defineExpose({ checkMap });
 #map {
   height: 240px;
   position: relative;
+}
+.my-text {
+  color: var(--text-color)
 }
 </style>

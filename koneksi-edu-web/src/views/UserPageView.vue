@@ -1,16 +1,15 @@
 <template>
-  <div class="flex justify-center min-h-screen bg-gradient-to-r from-pink-500 py-2 to-yellow-500">
+  <div :style="cssVariables" class="flex justify-center min-h-screen main-bg-color">
     <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between">
-    <!-- <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between" :style="{ background: `url('/ppob-vn/office1.png') no-repeat center center`, backgroundSize: 'cover' }"> -->
       <div v-if="errorMsg" class="text-red-500 mb-4">
         {{ errorMsg }}
       </div>
       <div v-else>
         <div class="flex items-center bg-opacity-80 bg-blue-100 rounded-md p-2">
           <img v-if="imgUrl" :src="imgUrl" class="animate__animated animate__flipInY w-12 h-12 rounded-full mr-2" />
-          <div class="bio">
-            <h1 class="font-semibold mb-1 text-red-400">{{ username }}</h1>
-            <div class="text-sm text-blue-900 font-semibold rounded-lg">
+          <div class="bio main-text-color">
+            <h1 class="font-semibold mb-1">{{ username }}</h1>
+            <div class="text-sm font-semibold rounded-lg">
               <TypewriterComponent :text="bio" />
             </div>
           </div>
@@ -20,7 +19,7 @@
             @click="toggleLinkOrKiosk(true)" 
             :class="[
               'flex-1 font-bold py-2 px-4 text-center animate__animated',
-              linkOrKiosk ? 'bg-white text-blue-400 rounded-full animate__slideInRight' : 'text-white'
+              linkOrKiosk ? 'bg-white main-text-color rounded-full animate__slideInRight' : 'text-white'
             ]"
           >
             <i class="bi bi-link-45deg"></i>
@@ -29,29 +28,28 @@
             @click="toggleLinkOrKiosk(false)" 
             :class="[
               'flex-1 font-bold py-2 px-4 text-center animate__animated',
-              !linkOrKiosk ? 'bg-white text-blue-400 rounded-full animate__slideInLeft' : 'text-white'
+              !linkOrKiosk ? 'bg-white main-text-color rounded-full animate__slideInLeft' : 'text-white'
             ]"
           >
             <i class="bi bi-bag-heart"></i>
           </button>
         </div>
 
-        <!-- Container untuk CartIcon -->
         <div v-show="!linkOrKiosk" class="z-10 absolute w-24 left-1/2 transform -translate-x-1/2 translate-y-2">
-          <div class="bg-white rounded-md shadow-ms flex justify-center items-center mb-4">
+          <div :style="cssVariables" class="bg-white rounded-md shadow-ms flex justify-center items-center mb-4">
             <CartIcon ref="cartIcon" @checkoutTriggered="openCheckoutModal"/>
           </div>
         </div>
         
-        <div class="bg-white bg-opacity-50 p-2 rounded-md mt-2 h-[520px] custom-scrollbar">
+        <div :style="cssVariables" class="bg-white bg-opacity-50 p-2 rounded-md mt-2 h-[520px] custom-scrollbar">
           <div v-show="linkOrKiosk">
             <LinksPage/>
             <CarousellPage ref="komponenCarousell"/>
             <LocationPage ref="komponenLokasi" />
           </div>
           <div v-show="!linkOrKiosk">
-            <div class="mt-10 grid grid-cols-2 gap-4">
-              <ProductCard 
+            <div :style="cssVariables" class="mt-10 grid grid-cols-2 gap-4">
+              <ProductCard
                 v-for="product in products" 
                 :key="product.id" 
                 :product="product" 
@@ -61,28 +59,29 @@
         </div>
       </div>
     </div>
-    <ProductDetailModal 
+    <ProductDetailModal
+      :style="cssVariables" 
       v-if="selectedProduct" 
       :isOpen="isModalOpen" 
       :product="selectedProduct"
-      @productAdded = "getCartData"
+      @productAdded="getCartData"
       @close="closeModal"/>
   </div>
-  <CheckoutPage v-if="isCartModalOpen" :isOpen="isCartModalOpen" @updateNewCart="getCartData" @close="closeCheckoutModal"/>
+  <CheckoutPage :style="cssVariables" v-if="isCartModalOpen" :isOpen="isCartModalOpen" @updateNewCart="getCartData" @close="closeCheckoutModal"/>
 </template>
 
 <script>
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { supabase } from '@/lib/supabaseClient.js';
 import LinksPage from '@/components/UserPageView/LinksPage.vue';
 import LocationPage from '@/components/UserPageView/LocationPage.vue';
 import CarousellPage from '@/components/UserPageView/CarousellPage.vue';
 import TypewriterComponent from '@/components/TypeWriterEffect.vue';
-import ProductCard from '@/components/UserPageView/ProductCardPage.vue'
+import ProductCard from '@/components/UserPageView/ProductCardPage.vue';
 import ProductDetailModal from '@/components/UserPageView/ProductCardPage/ProductDetailModal.vue';
-import CartIcon from '@/components/UserPageView/CartIconPage.vue'
-import CheckoutPage from '@/components/UserPageView/CheckoutPage.vue'
+import CartIcon from '@/components/UserPageView/CartIconPage.vue';
+import CheckoutPage from '@/components/UserPageView/CheckoutPage.vue';
 
 export default {
   components: {
@@ -93,14 +92,14 @@ export default {
     ProductCard,
     ProductDetailModal,
     CartIcon,
-    CheckoutPage
+    CheckoutPage,
   },
   setup() {
     const route = useRoute();
     const username = ref(route.params.id);
-    const imgUrl = ref("");
-    const bio = ref("");
-    const errorMsg = ref("");
+    const imgUrl = ref('');
+    const bio = ref('');
+    const errorMsg = ref('');
     const komponenLokasi = ref(null);
     const komponenCarousell = ref(null);
     const isKioskActive = ref(null);
@@ -108,17 +107,20 @@ export default {
     const products = ref([]);
     const selectedProduct = ref(null);
     const isModalOpen = ref(false);
-    const cartIcon = ref(null)
+    const cartIcon = ref(null);
     const isCartModalOpen = ref(false);
+    const bgColor = ref({});
+    const textColor = ref("")
+    const btnBgColor = ref({})
 
     const openModal = (product) => {
       selectedProduct.value = product;
       isModalOpen.value = true;
     };
 
-    const openCheckoutModal = () =>{
+    const openCheckoutModal = () => {
       isCartModalOpen.value = true;
-    }
+    };
 
     const closeCheckoutModal = () => {
       isCartModalOpen.value = false;
@@ -130,7 +132,7 @@ export default {
     };
 
     const getCartData = () => {
-      cartIcon.value.updateItemValue()
+      cartIcon.value.updateItemValue();
     };
 
     const fetchProfile = async (newUsername) => {
@@ -144,19 +146,20 @@ export default {
           throw profileError;
         }
         if (!profile) {
-          throw new Error("Profile not found");
+          throw new Error('Profile not found');
         }
         if (profile.avatar_url) {
           imgUrl.value = `https://lkyubyoimdryxsrpsbli.supabase.co/storage/v1/object/public/avatars/${profile.avatar_url}`;
         }
         bio.value = profile.bio;
         isKioskActive.value = profile.kios_status;
-        errorMsg.value = "";
+        errorMsg.value = '';
       } catch (fetchError) {
-        console.error("Error fetching profile:", fetchError);
-        errorMsg.value = "Profil tidak ditemukan atau kesalahan terjadi saat mengambil data profil.";
-        imgUrl.value = "";
-        bio.value = "";
+        console.error('Error fetching profile:', fetchError);
+        errorMsg.value =
+          'Profil tidak ditemukan atau kesalahan terjadi saat mengambil data profil.';
+        imgUrl.value = '';
+        bio.value = '';
       }
     };
 
@@ -171,7 +174,31 @@ export default {
         }
         products.value = productsData;
       } catch (fetchError) {
-        console.error("Error fetching products:", fetchError);
+        console.error('Error fetching products:', fetchError);
+      }
+    };
+
+    const fetchDisplay = async (username) => {
+      try {
+        const { data: display, error: displayError } = await supabase
+          .from('display')
+          .select('*')
+          .eq('username', username)
+          .single();
+        if (displayError) {
+          throw displayError;
+        }
+        bgColor.value = {
+          bgColor1: display.bg_color1,
+          bgColor2: display.bg_color2,
+        };
+        textColor.value = display.text_color
+        btnBgColor.value = {
+          color1: display.bg_button,
+          color2: display.bg_hover
+        }
+      } catch (displayError) {
+        console.log('Error:', displayError);
       }
     };
 
@@ -180,6 +207,7 @@ export default {
     };
 
     onMounted(async () => {
+      await fetchDisplay(username.value);
       await fetchProfile(username.value);
       await fetchProducts();
       await nextTick();
@@ -190,6 +218,14 @@ export default {
         komponenCarousell.value.loadCarousell(username.value);
       }
     });
+
+    const cssVariables = computed(() => ({
+      '--bg-color1': bgColor.value.bgColor1,
+      '--bg-color2': bgColor.value.bgColor2,
+      '--text-color': textColor.value,
+      '--btn-main': btnBgColor.value.color1,
+      '--btn-hover': btnBgColor.value.color2
+    }));
 
     return {
       username,
@@ -210,23 +246,24 @@ export default {
       cartIcon,
       isCartModalOpen,
       closeCheckoutModal,
-      openCheckoutModal
+      openCheckoutModal,
+      cssVariables,
     };
-  }
+  },
 };
 </script>
 
-<style scoped>
+<style>
 .custom-scrollbar {
   scrollbar-width: thin;
   -ms-overflow-style: none;
-  overflow-y: auto; 
-  -webkit-overflow-scrolling: touch; 
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 5px; 
-  height: 5px; 
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -234,7 +271,15 @@ export default {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2); 
+  background-color: rgba(0, 0, 0, 0.2);
   border-radius: 10px;
+}
+
+.main-bg-color {
+  background: linear-gradient(to right, var(--bg-color1), var(--bg-color2));
+}
+
+.main-text-color {
+  color: var(--text-color)
 }
 </style>
