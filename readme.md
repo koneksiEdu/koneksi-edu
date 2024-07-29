@@ -13,7 +13,7 @@ Ini adalah aplikasi untuk membuat bio profile yang biasanya disebarkan di sosial
 ## Fitur Untuk Update Selanjutnya
 
 - ~~Bot telegram~~
-- Atur tampilan
+- ~~Atur tampilan~~
 - Menambah provider Autentikasi lainnya
 
 ## Perhatian!!

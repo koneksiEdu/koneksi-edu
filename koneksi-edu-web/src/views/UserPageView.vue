@@ -1,6 +1,6 @@
 <template>
   <div :style="cssVariables" class="flex justify-center min-h-screen main-bg-color">
-    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between">
+    <div class="bg-white p-2 rounded-lg shadow-md max-w-xs h-[672px] bg-opacity-75 w-full my-auto mx-4 flex flex-col justify-between" :style="bgCardStyle">
       <div v-if="errorMsg" class="text-red-500 mb-4">
         {{ errorMsg }}
       </div>
@@ -112,6 +112,7 @@ export default {
     const bgColor = ref({});
     const textColor = ref("")
     const btnBgColor = ref({})
+    const bgCardStyle = ref('')
 
     const openModal = (product) => {
       selectedProduct.value = product;
@@ -188,15 +189,18 @@ export default {
         if (displayError) {
           throw displayError;
         }
+        if(display.bg_url){
+          bgCardStyle.value = `background: url(${display.bg_url}) no-repeat center center; background-size: cover;`;
+        }
         bgColor.value = {
           bgColor1: display.bg_color1,
           bgColor2: display.bg_color2,
         };
-        textColor.value = display.text_color
+        textColor.value = display.text_color;
         btnBgColor.value = {
           color1: display.bg_button,
           color2: display.bg_hover
-        }
+        };
       } catch (displayError) {
         console.log('Error:', displayError);
       }
@@ -248,6 +252,7 @@ export default {
       closeCheckoutModal,
       openCheckoutModal,
       cssVariables,
+      bgCardStyle
     };
   },
 };
