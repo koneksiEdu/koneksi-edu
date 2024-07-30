@@ -27,7 +27,7 @@
             <Chrome v-model="colors.textColor" class="mt-2" />
             <h3 class="mt-4 text-blue-400 font-semibold">Warna Tombol</h3>
             <Chrome v-model="colors.btnColor1" class="mt-2" />
-            <h3 class="mt-4 text-blue-400 font-semibold">Hover Button</h3>
+            <h3 class="mt-4 text-blue-400 font-semibold">Hover Tombol</h3>
             <Chrome v-model="colors.btnColor2" class="mt-2" />
           </div>
         </div>
@@ -136,7 +136,7 @@ const fetchDisplay = async () => {
     if(data.bg_url) {
       form.value.url = data.bg_url
     }
-    if (data && data.length > 0) {
+    if (data) {
       colors.value = {
         bgColor1: data.bg_color1 || '#ffffff',
         bgColor2: data.bg_color2 || '#ffffff',
